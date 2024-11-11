@@ -1,14 +1,14 @@
 //
-//  nVolveApp.swift
-//  nVolve
+//  DemoApp.swift
+//  Demo
 //
-//  Created by Luis on 10/10/24.
+//  Created by Abdalla Abdelmagid on 11/10/24.
 //
 
 import SwiftUI
 
 @main
-struct nVolveApp: App {
+struct DemoApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
