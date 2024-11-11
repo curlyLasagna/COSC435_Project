@@ -15,7 +15,9 @@ struct FilterSection: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             Text(title)
-                .font(.headline)
+                .font(.system(size: 24))
+                .fontWeight(.bold)
+                .padding(.bottom, 15)
                 .foregroundColor(.white)  // Make section titles white
             
             FlowLayout(spacing: 8) {

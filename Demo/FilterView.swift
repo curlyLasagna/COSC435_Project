@@ -16,16 +16,26 @@ struct FilterView: View {
             Color(red: 0.235, green: 0.235, blue: 0.235)
                 .ignoresSafeArea()
             
-            Image("tu-logo")
-                .resizable()
-                .scaledToFit()
+            VStack {
+                    HStack {
+                        Spacer()
+                        Image("tu-logo")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 100, height: 100)  // Adjust size as needed
+                            .padding([.top, .trailing], 20)  // Optional padding for spacing from edges
+                    }
+                    Spacer()
+                }
             
             // Content
             VStack(alignment: .leading, spacing: 20) {
                 Text("FILTERS")
-                    .font(.system(size: 24))
+                    .font(.system(size: 30))
+                    .fontWeight(.bold)
                     .foregroundColor(.white)
                     .padding(.top, 20)
+                    .padding(.bottom, 30)
                 
                 VStack(alignment: .leading, spacing: 18) {
                     FilterSection(title: "Themes",
