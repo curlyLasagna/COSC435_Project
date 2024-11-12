@@ -1,29 +1,53 @@
 //
 //  ContentView.swift
-//  mapkit
+//  Demo
 //
-//  Created by Rasheed Nolley on 10/28/24.
+//  Created by Abdalla Abdelmagid on 11/10/24.
 //
 
 import SwiftUI
 import MapKit
+
 struct ContentView: View {
-    @State private var position : MapCameraPosition = .automatic
+    @StateObject private var viewModel = ContentViewModel()
     
     var body: some View {
-        VStack {
-            HStack{
-                Text("Filters")
+        ZStack {
+            VStack {
+                HStack {
+                    Text("Filters")
+                    Spacer()
+                    Button(action: {
+                        viewModel.showingFilters.toggle()
+                    }) {
+                        Image(systemName: "slider.horizontal.3")
+                    }
+                }
+                .padding()
+                .overlay(
+                    Rectangle()
+                        .stroke(Color.black, lineWidth: 1)
+                )
+                
+                Map(position: $viewModel.position) {
+                    Marker("Towson University", coordinate: viewModel.towsonCoordinate)
+                }
+                .mapStyle(.standard)
+                .frame(height: 400)
+                
                 Spacer()
-                Image(systemName: "slider.horizontal.3")
-            }.padding().overlay(
-              Rectangle()
-                .stroke(Color.black, lineWidth: 1)
-            )
-            Map(position: $position) {
-                Marker("Towson University", coordinate: CLLocationCoordinate2D(latitude: 39.3937,longitude: -76.6082))
-            }.mapStyle(.standard).frame(height: 400)
-            Spacer()
+            }
+            
+            if viewModel.showingFilters {
+                Color.black.opacity(0.3)
+                    .ignoresSafeArea()
+                    .onTapGesture {
+                        viewModel.showingFilters = false
+                    }
+                
+                FilterView(viewModel: viewModel.filterViewModel)
+                    .transition(.move(edge: .trailing))
+            }
         }
     }
 }
