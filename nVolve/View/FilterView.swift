@@ -12,20 +12,24 @@ struct FilterView: View {
     
     var body: some View {
         ZStack {
-            // Plain white background
+            // TU grey background
             Color(red: 0.235, green: 0.235, blue: 0.235)
                 .ignoresSafeArea()
             
             Image("tu-logo")
-                .resizable()
-                .scaledToFit()
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 75, height: 75)
+                    .position(x: UIScreen.main.bounds.width - 50, y: 50)  // Adjust to place in top-right corner
             
             // Content
             VStack(alignment: .leading, spacing: 20) {
                 Text("FILTERS")
-                    .font(.system(size: 24))
+                    .font(.system(size: 32))
+                    .fontWeight(.bold)
                     .foregroundColor(.white)
                     .padding(.top, 20)
+                    .padding(.bottom, 20)
                 
                 VStack(alignment: .leading, spacing: 18) {
                     FilterSection(title: "Themes",
@@ -47,6 +51,8 @@ struct FilterView: View {
                 HStack(spacing: 10) {
                     Button(action: viewModel.clearFilters) {
                         Text("Clear filters")
+                            .font(.system(size: 20))
+                            .fontWeight(.bold)
                             .foregroundColor(.black)
                             .padding()
                             .frame(maxWidth: .infinity)
@@ -56,6 +62,8 @@ struct FilterView: View {
                     
                     Button(action: viewModel.applyFilters) {
                         Text("Apply")
+                            .font(.system(size: 20))
+                            .fontWeight(.bold)
                             .foregroundColor(.white)
                             .padding()
                             .frame(maxWidth: .infinity)
