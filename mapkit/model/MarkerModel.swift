@@ -10,7 +10,7 @@ import CoreLocation
 import MapKit
 
 
-class MarkerViewModel: ObservableObject {
+class MarkerModel: ObservableObject {
     @Published var markers: [(name: String, image: String, coordinate: CLLocationCoordinate2D, color: Color)] = [
         ("Union", "building.columns.fill", .UnionLocation, Color(red: 1.0, green: 0.733, blue: 0.0)),
         ("Unitas stadium", "american.football.professional.fill", .UnitedStadium, Color(red: 1.0, green: 0.733, blue: 0.0)),

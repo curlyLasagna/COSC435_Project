@@ -36,7 +36,9 @@ struct Card: View {
             .padding(8)
             .background(Color.yellow.opacity(0.8))
             .cornerRadius(8)
+            .foregroundColor(.black)
         }
+        .foregroundColor(.black)
         .frame(width: 180, height: 240) // Adjusted card size
         .background(Color.white)
         .cornerRadius(12)

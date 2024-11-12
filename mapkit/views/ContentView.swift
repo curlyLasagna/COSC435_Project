@@ -16,7 +16,8 @@ struct ContentView: View {
 //                     )
 //        )
 //    )
-    @StateObject private var viewModel = MarkerViewModel()
+    @StateObject private var viewModel = MarkerModel()
+    @State private var showevent = false
     
     var body: some View {
         
@@ -29,7 +30,7 @@ struct ContentView: View {
                 Rectangle()
                     .stroke(Color.black, lineWidth: 1)
                     .onTapGesture {
-                        
+                        //shoud display card data 
                     }
             )
           
@@ -43,7 +44,7 @@ struct ContentView: View {
             }.mapStyle(.standard).frame(height: 400)
                 .colorScheme(.dark)
                 .onTapGesture{
-                    
+                  
                 }
             
         
@@ -67,6 +68,15 @@ struct ContentView: View {
                              room: "Room 204")
                     }.onTapGesture {
                         //should have a link to the page of data
+                        showevent=true
+                    }.fullScreenCover(isPresented:$showevent){
+                        EventInfo(
+                            showEvent: $showevent,image: Image(systemName: "photo"),
+                                  title: "Event Title",
+                                  time: "10:00 AM",
+                                  room: "Room 204",
+                                  description: "hope this works",
+                                  perks:["free food","arts"])
                     }
                 }
                 .background(Color.gray)
