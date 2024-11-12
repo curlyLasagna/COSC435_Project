@@ -1,18 +1,17 @@
 //
-//  mapkitApp.swift
-//  mapkit
+//  nVolveApp.swift
+//  nVolve
 //
-//  Created by Rasheed Nolley on 10/28/24.
+//  Created by Luis on 10/10/24.
 //
 
 import SwiftUI
 
 @main
-struct MapkitApp: App {
+struct nVolveApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
         }
     }
 }
-
