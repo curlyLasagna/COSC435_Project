@@ -11,17 +11,15 @@ class FilterViewModel: ObservableObject {
     @Published var selectedFilters: Set<String> = []
     @Published var isShowing: Bool = false
     
-    let themeFilters = ["Theme 1", "Theme 2", "Theme 3"]
-    let categoryFilters = ["Category 1", "Category 2", "Category 3", "Category 4", "Category 5", "Category 6"]
-    let perkFilters = ["Perk 1", "Perk 2", "Perk 3"]
-    let locationFilters = ["Nearby", "Union", "Burdick field"]
+    let themeFilters = ["Arts & Music", "Athletics", "Cultural", "Community Service", "Open House", "Spiritual", "Meeting/Special Gathering", "Social/Entertainment", "Fundraising", "Learning", "Training"]
+    let perkFilters = ["Free Food", "Free Stuff"]
+    let locationFilters = ["Nearby", "Union", "Psychology Building", "Liberal Arts", "Arts", "Newman Center", "TU Arena", "Tiger Plaza", "Library", "West Village Dining", "Lecture Hall", "United Stadium", "Burdick Field"]
     
     func clearFilters() {
         selectedFilters.removeAll()
     }
     
     func applyFilters() {
-        isShowing = false
-        // Add any additional filter application logic here
+        // Add any filter application logic here
     }
 }

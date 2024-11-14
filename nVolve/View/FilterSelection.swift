@@ -15,10 +15,10 @@ struct FilterSection: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             Text(title)
-                .font(.system(size: 24))
+                .font(.system(size: 20))
                 .fontWeight(.bold)
                 .foregroundColor(.white)  // Make section titles white
-                .padding(.bottom, 10)
+                .padding(.bottom, 6)
             
             FlowLayout(spacing: 8) {
                 ForEach(filters, id: \.self) { filter in
