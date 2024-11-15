@@ -16,11 +16,6 @@
 			path = nVolve;
 			sourceTree = "<group>";
 		};
-		A08D23282CE32038004DD93B /* Views */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = Views;
-			sourceTree = "<group>";
-		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -39,7 +34,6 @@
 			children = (
 				A00D74752CB87E0300682203 /* nVolve */,
 				A00D74742CB87E0300682203 /* Products */,
-				A08D23282CE32038004DD93B /* Views */,
 			);
 			sourceTree = "<group>";
 		};
@@ -68,7 +62,6 @@
 			);
 			fileSystemSynchronizedGroups = (
 				A00D74752CB87E0300682203 /* nVolve */,
-				A08D23282CE32038004DD93B /* Views */,
 			);
 			name = nVolve;
 			packageProductDependencies = (
