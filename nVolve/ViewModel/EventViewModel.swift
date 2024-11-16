@@ -6,10 +6,19 @@
 //
 
 import UIKit
+import Alamofire
 
 @Observable class EventViewModel {
     var events: [InvolvedEvents] = []
-    func fetchData() {
-        guard let endpoint = URL()
+    func fetchTodayEvents() {
+        AF.request()
+    }
+    
+    func fetchEventsByPerks() {
+        
+    }
+    
+    func fetchEventsByTheme() {
+        
     }
 }
