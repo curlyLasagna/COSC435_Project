@@ -1,6 +1,6 @@
 //
 //  FilterView.swift
-//  Demo
+//  nVolve
 //
 //  Created by Abdalla Abdelmagid on 11/11/24.
 //
@@ -10,15 +10,15 @@ import SwiftUI
 struct FilterView: View {
     @ObservedObject var viewModel: FilterViewModel
     var dismiss: () -> Void
-    
+
     var body: some View {
         ZStack {
             // TU grey background
             Color(red: 0.235, green: 0.235, blue: 0.235)
                 .ignoresSafeArea()
-            
+
             // Content
-            ScrollView() {
+            ScrollView {
                 VStack(alignment: .leading, spacing: 16) {
                     // Header with Filters text and logo
                     HStack {
@@ -26,30 +26,35 @@ struct FilterView: View {
                             .font(.system(size: 28))
                             .fontWeight(.bold)
                             .foregroundColor(.white)
-                        
+
                         Spacer()
-                        
+
                         Image("tu-logo")
                             .resizable()
                             .scaledToFit()
                             .frame(width: 75, height: 75)
                     }
 
-                    
                     VStack(alignment: .leading, spacing: 18) {
-                        FilterSection(title: "Themes",
-                                    filters: viewModel.themeFilters,
-                                    selectedFilters: $viewModel.selectedFilters)
-                        FilterSection(title: "Perks",
-                                    filters: viewModel.perkFilters,
-                                    selectedFilters: $viewModel.selectedFilters)
-                        FilterSection(title: "Location",
-                                    filters: viewModel.locationFilters,
-                                    selectedFilters: $viewModel.selectedFilters)
+                        FilterSectionView(
+                            title: "Themes",
+                            filters: viewModel.themeFilters,
+                            selectedFilters: $viewModel.selectedFilters
+                        )
+                        FilterSectionView(
+                            title: "Perks",
+                            filters: viewModel.perkFilters,
+                            selectedFilters: $viewModel.selectedFilters
+                        )
+                        FilterSectionView(
+                            title: "Location",
+                            filters: viewModel.locationFilters,
+                            selectedFilters: $viewModel.selectedFilters
+                        )
                     }
-                    
+
                     Spacer()
-                    
+
                     HStack(spacing: 10) {
                         Button(action: viewModel.clearFilters) {
                             Text("Clear filters")
@@ -61,7 +66,7 @@ struct FilterView: View {
                                 .background(Color.yellow)
                                 .cornerRadius(8)
                         }
-                        
+
                         Button(action: {
                             viewModel.applyFilters()
                             dismiss()

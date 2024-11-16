@@ -1,34 +1,41 @@
+//
+//  CardView.swift
+//  nVolve
+//
+//  Created by Abdalla Abdelmagid on 11/11/24.
+//
+
 import SwiftUI
 
-struct Card: View {
+struct CardView: View {
     var image: Image
     var title: String
     var time: String
     var room: String
-    
+
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
             image
                 .resizable()
-                .scaledToFit() // Ensures the image fills the available width
-                .frame(height: 120) // Increase image height to fill more space
-                .clipped() // Ensures the image doesn't overflow the frame
+                .scaledToFit()
+                .frame(height: 120)
+                .clipped()
                 .cornerRadius(8)
                 .overlay(
                     RoundedRectangle(cornerRadius: 8)
                         .stroke(Color.purple, lineWidth: 1)
                 )
-            
+
             VStack(alignment: .leading, spacing: 3) {
                 Text(title)
-                    .font(.headline) 
+                    .font(.headline)
                     .fontWeight(.semibold)
                     .lineLimit(1)
-                
-                Text("\(time) / \(room)") // Combined time and room into a single line
+
+                Text("\(time) / \(room)")
                     .font(.caption)
                     .bold()
-                
+
                 Text("Description")
                     .font(.caption)
                     .lineLimit(2)
@@ -39,7 +46,7 @@ struct Card: View {
             .foregroundColor(.black)
         }
         .foregroundColor(.black)
-        .frame(width: 180, height: 240) // Adjusted card size
+        .frame(width: 180, height: 240)
         .background(Color.white)
         .cornerRadius(12)
         .overlay(
@@ -52,7 +59,7 @@ struct Card: View {
 
 struct Card_Previews: PreviewProvider {
     static var previews: some View {
-        Card(
+        CardView(
             image: Image(systemName: "photo"),
             title: "Event Title",
             time: "10:00 AM",
@@ -62,4 +69,3 @@ struct Card_Previews: PreviewProvider {
         .padding()
     }
 }
-
