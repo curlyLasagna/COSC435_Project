@@ -1,12 +1,13 @@
 //
 //  ContentView.swift
-//  mapkit
+//  Demo
 //
-//  Created by Rasheed Nolley on 10/28/24.
+//  Created by Abdalla Abdelmagid on 11/10/24.
 //
 
 import SwiftUI
 import MapKit
+
 struct ContentView: View {
     
     @State private var position : MapCameraPosition = .automatic
