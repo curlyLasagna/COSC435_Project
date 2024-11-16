@@ -1,17 +1,17 @@
 //
 //  FilterChip.swift
-//  Demo
+//  nVolve
 //
 //  Created by Abdalla Abdelmagid on 11/11/24.
 //
 
 import SwiftUI
 
-struct FilterChip: View {
+struct FilterChipView: View {
     let text: String
     let isSelected: Bool
     let onTap: () -> Void
-    
+
     var body: some View {
         Text(text)
             .padding(.horizontal, 16)
