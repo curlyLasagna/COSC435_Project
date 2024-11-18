@@ -32,33 +32,55 @@ import SwiftUI
             case .success(let data):
                 self.events = data.value
                 
-                // Debug statements for testing
-                for event in self.events {
-                    print("Event ID: \(event.id ?? "No ID")")
-                    let mirror = Mirror(reflecting: event)
-                    for child in mirror.children {
-                        if let key = child.label {
-                            print("\(key): \(child.value)")
-                        }
-                    }
-                    print("---")
-                }
+//                // Debug statements for testing
+//                for event in self.events {
+//                    print("Event ID: \(event.id ?? "No ID")")
+//                    let mirror = Mirror(reflecting: event)
+//                    for child in mirror.children {
+//                        if let key = child.label {
+//                            print("\(key): \(child.value)")
+//                        }
+//                    }
+//                    print("---")
+//                }
             case .failure(let err):
                 print(err)
             }
         }
     }
     
-    func getCoordinates() {
-        
+    func getCoordinates(latitude: String?, longitude: String?) -> CLLocationCoordinate2D {
+        // Convert string into
+        if let latitude = Double(latitude ?? "39.394839"), let longitude = Double(longitude ?? "76.610880") {
+            return CLLocationCoordinate2D(latitude: Double(latitude), longitude: Double(longitude))
+        }
+        // Defaults to Union
+        return CLLocationCoordinate2D(latitude: 39.394839, longitude: 76.610880)
     }
     
-    func getImages() {
-        
+    func getImages(imgPath: String?) -> String {
+        // To get the full image path, prepend the returned image path with https://se-images.campuslabs.com/clink/images/
+        if let fullImgPath = imgPath {
+            return  "https://se-images.campuslabs.com/clink/images/" + fullImgPath
+        }
+        return ""
     }
     
-    func getDates() {
+    func getDates(dateAsString: String?) -> String {
+        let isoFormatter = ISO8601DateFormatter()
+        isoFormatter.formatOptions = [
+            .withFullDate,
+//            .withTime,
+        ]
+       
+        guard let createdDate = isoFormatter.date(from: dateAsString ?? "Boof") else {
+                  return "No date"
+              }
+//        let readableFormatter = DateFormatter()
+//        readableFormatter.dateStyle = .medium
+//        readableFormatter.timeStyle = .short
         
+        return DateFormatter().string(from: createdDate)
     }
 
     func fetchEventsByPerks() {

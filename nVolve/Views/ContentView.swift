@@ -1,7 +1,6 @@
 import MapKit
 import SwiftUI
 
-// MARK: - Main Content View
 struct ContentView: View {
     private var contentViewModel = ContentViewModel()
     @StateObject private var filterViewModel = FilterViewModel()
@@ -76,8 +75,10 @@ struct MapSection: View {
     var body: some View {
         VStack(spacing: 0) {
             Map(position: $position) {
-                ForEach
-                MapMarker(coordinate: viewModel.events)
+                ForEach(viewModel.events) {
+                    event in
+                    Marker(event.eventName ?? "boof", coordinate: viewModel.getCoordinates(latitude: event.latitude, longitude: event.longitude))
+                }
             }
             .mapStyle(.standard)
             .frame(height: 400)
@@ -115,6 +116,8 @@ struct EventListSection: View {
                 ForEach(viewModel.events.indices, id: \.self) { index in
                     EventCard(
                         event: viewModel.events[index],
+                        date: viewModel.getDates(dateAsString: viewModel.events[index].startDate),
+                        imagePath: viewModel.getImages(imgPath: viewModel.events[index].imagePath),
                         showEvent: $showEvent
                     )
                 }
@@ -127,14 +130,16 @@ struct EventListSection: View {
 
 struct EventCard: View {
     let event: InvolvedEvent?
+    let date: String
+    let imagePath: String?
     @Binding var showEvent: Bool
 
     var body: some View {
         if let event {
             CardView(
-                image: Image(systemName: "photo"),
+                imagePath: imagePath,
                 title: event.eventName ?? "boof",
-                time: event.startDate ?? "boof",
+                time: date,
                 room: event.eventLocation ?? "boof"
             )
             .onTapGesture {
@@ -143,9 +148,9 @@ struct EventCard: View {
             .fullScreenCover(isPresented: $showEvent) {
                 EventInfoView(
                     showEvent: $showEvent,
-                    image: Image(systemName: "photo"),
+//                    image: AsyncImage(url: URL(string: imagePath)),
                     title: event.eventName ?? "boof",
-                    time: event.startDate ?? "boof",
+                    time: date,
                     room: event.eventLocation ?? "boof",
                     description: event.eventDescription ?? "boof",
                     perks: event.perks ?? ["boof"]
