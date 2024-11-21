@@ -15,6 +15,10 @@ struct EventInfoView: View {
     var room: String
     var description: String
     @State private var favorited = false
+    
+    // these are for placeholder data
+    var eventLat: Double
+    var eventLng: Double
 
     var perks: [String]
 
@@ -47,7 +51,7 @@ struct EventInfoView: View {
                 Text(description)
 
                 Spacer()
-
+                    
                 List(perks, id: \.self) { perk in
                     ZStack {
                         RoundedRectangle(cornerRadius: 30)
@@ -66,6 +70,9 @@ struct EventInfoView: View {
                             .foregroundColor(.white)
                             .font(.system(size: 20))
                             .fontWeight(.bold)
+                    }.onTapGesture {
+                        openMapApp(latitude:eventLat , longitude: eventLng)
+                        showEvent = false
                     }
 
                     Image(systemName: favorited ? "heart.fill" : "heart")
@@ -90,6 +97,8 @@ struct EventInfoView: View {
         time: "10:00 AM",
         room: "Room 204",
         description: "hope this works",
+        eventLat:39.39069379520995,
+        eventLng:-76.60563329053981,
         perks: ["free food", "arts"]
     )
 }

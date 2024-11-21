@@ -6,17 +6,31 @@
 
 import SwiftUI
 import MapKit
+import CoreLocation
+import CoreLocationUI
 
 struct ContentView: View {
     @State private var position: MapCameraPosition = .automatic
     @StateObject private var viewModel = Markers()
     @State private var showEvent = false
     @State private var showingFilters = false
+    let manager = CLLocationManager()
+//    @State private var userLocation = manager.location
     let filterViewModel = FilterViewModel()
 
     var body: some View {
         ZStack {
             VStack(spacing: 0) {
+                HStack{
+                    Spacer()
+                    Image("tu-involved")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 100, height: 40).onTapGesture {
+                            position = .automatic
+                        }
+                    Spacer()
+                }
                 HStack {
                     Text("Filters")
                     Spacer()
@@ -26,24 +40,39 @@ struct ContentView: View {
                         Image(systemName: "slider.horizontal.3")
                     }
                 }
+
                 .padding()
                 .overlay(
                     Rectangle()
                         .stroke(Color.black, lineWidth: 1)
                 )
-
-                Map(position: $position) {
-                    ForEach(viewModel.markers, id: \.name) { marker in
-                        Marker(marker.name, systemImage: marker.image, coordinate: marker.coordinate)
-                            .tint(marker.color)
+              
+               
+                ZStack(alignment: .topLeading) {
+                    // Map Layer
+                    Map(position: $position) {
+                        ForEach(viewModel.markers, id: \.name) { marker in
+                            Marker(marker.name, systemImage: marker.image, coordinate: marker.coordinate)
+                                .tint(marker.color)
+                        }
+                        UserAnnotation()
+                    }.mapControls{
+                        MapUserLocationButton()
+                        MapPitchToggle()
+                    
                     }
+                    .onAppear {
+                        manager.requestWhenInUseAuthorization()
+                        manager.startUpdatingLocation()
+                    }
+                    .mapStyle(.standard)
+                    .frame(height: 400)
+                    .colorScheme(.dark)
                 }
-                .mapStyle(.standard)
-                .frame(height: 400)
-                .colorScheme(.dark)
-                .onTapGesture {
-                    // Handle map tap if needed
-                }
+
+                
+                
+               
 
                 HStack {
                     Text("Events")
@@ -78,15 +107,18 @@ struct ContentView: View {
                                     time: "10:00 AM",
                                     room: "Room 204",
                                     description: "hope this works",
+                                    eventLat: 39.39069379520995,
+                                    eventLng: -76.60563329053981,
                                     perks: ["free food", "arts"]
                                 )
                             }
                         }
                     }
-                    .background(Color.gray)
+                    .background(Color.white)
                     .padding(.horizontal)
                 }
             }
+           
 
             // Overlay FilterView when showingFilters is true
             if showingFilters {
@@ -95,6 +127,7 @@ struct ContentView: View {
                     .onTapGesture {
                         showingFilters = false
                     }
+                    
 
                 FilterView(
                     viewModel: filterViewModel,
