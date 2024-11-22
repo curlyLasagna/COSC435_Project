@@ -13,6 +13,7 @@ struct ContentView: View {
     @State private var showEvent = false
     @State private var showingFilters = false
     let filterViewModel = FilterViewModel()
+    @StateObject private var notificationsViewModel = NotificationsViewModel()
 
     var body: some View {
         ZStack {
@@ -31,6 +32,12 @@ struct ContentView: View {
                     Rectangle()
                         .stroke(Color.black, lineWidth: 1)
                 )
+                
+                // Testing notifications
+                Button("Test Notification") {
+                    notificationsViewModel.checkForPermission()
+                }
+                .padding()
 
                 Map(position: $position) {
                     ForEach(viewModel.markers, id: \.name) { marker in
