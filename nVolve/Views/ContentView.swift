@@ -9,10 +9,12 @@ import MapKit
 
 struct ContentView: View {
     @State private var position: MapCameraPosition = .automatic
-    @StateObject private var viewModel = Markers()
+//    @StateObject private var viewModel = Markers()
     @State private var showEvent = false
     @State private var showingFilters = false
-    let filterViewModel = FilterViewModel()
+    @State var filterViewModel = FilterViewModel()
+    @State var contentViewModel = ContentViewModel()
+    
 
     var body: some View {
         ZStack {
@@ -33,10 +35,10 @@ struct ContentView: View {
                 )
 
                 Map(position: $position) {
-                    ForEach(viewModel.markers, id: \.name) { marker in
-                        Marker(marker.name, systemImage: marker.image, coordinate: marker.coordinate)
-                            .tint(marker.color)
-                    }
+//                    ForEach(viewModel.markers, id: \.name) { marker in
+//                        Marker(marker.name, systemImage: marker.image, coordinate: marker.coordinate)
+//                            .tint(marker.color)
+//                    }
                 }
                 .mapStyle(.standard)
                 .frame(height: 400)
@@ -102,6 +104,9 @@ struct ContentView: View {
                 )
                 .transition(.move(edge: .trailing))
             }
+        }
+        .onAppear {
+            contentViewModel.fetchTodayEvents()
         }
     }
 }
