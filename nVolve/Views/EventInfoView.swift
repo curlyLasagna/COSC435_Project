@@ -82,14 +82,3 @@ struct EventInfoView: View {
     }
 }
 
-#Preview {
-    EventInfoView(
-        showEvent: .constant(true),
-//        image: Image(systemName: "photo"),
-        title: "Event Title",
-        time: "10:00 AM",
-        room: "Room 204",
-        description: "hope this works",
-        perks: ["free food", "arts"]
-    )
-}
