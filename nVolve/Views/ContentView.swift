@@ -116,7 +116,7 @@ struct EventListSection: View {
                 ForEach(viewModel.events.indices, id: \.self) { index in
                     EventCard(
                         event: viewModel.events[index],
-                        date: viewModel.getDates(dateAsString: viewModel.events[index].startDate),
+                        date: viewModel.getStartTime(dateAsString: viewModel.events[index].startDate),
                         imagePath: viewModel.getImages(imgPath: viewModel.events[index].imagePath),
                         showEvent: $showEvent
                     )
