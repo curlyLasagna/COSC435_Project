@@ -9,7 +9,7 @@ import SwiftUI
 
 struct EventInfoView: View {
     @Binding var showEvent: Bool
-    var image: Image
+//    var image: Image
     var title: String
     var time: String
     var room: String
@@ -36,9 +36,9 @@ struct EventInfoView: View {
                 }
                 .padding(.top)
 
-                image
-                    .resizable()
-                    .scaledToFit()
+//                image
+//                    .resizable()
+//                    .scaledToFit()
 
                 Text("Time: \(time)")
                     .font(.largeTitle)
@@ -85,7 +85,7 @@ struct EventInfoView: View {
 #Preview {
     EventInfoView(
         showEvent: .constant(true),
-        image: Image(systemName: "photo"),
+//        image: Image(systemName: "photo"),
         title: "Event Title",
         time: "10:00 AM",
         room: "Room 204",
