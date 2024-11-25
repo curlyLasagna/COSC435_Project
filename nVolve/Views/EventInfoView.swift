@@ -1,5 +1,5 @@
 //
-//  Eventinfo.swift
+//  EventInfoView.swift
 //  nVolve
 //
 //  Created by Rasheed Nolley on 11/11/24.
@@ -9,7 +9,7 @@ import SwiftUI
 
 struct EventInfoView: View {
     @Binding var showEvent: Bool
-//    var image: Image
+    var imagePath: String?
     var title: String
     var time: String
     var room: String
@@ -36,13 +36,20 @@ struct EventInfoView: View {
                 }
                 .padding(.top)
 
-//                image
-//                    .resizable()
-//                    .scaledToFit()
+                // Use AsyncImage to load image from URL
+                if let imagePath = imagePath, let url = URL(string: imagePath) {
+                    AsyncImage(url: url) { image in
+                        image
+                            .resizable()
+                            .scaledToFit()
+                    } placeholder: {
+                        ProgressView()
+                    }
+                }
 
                 Text("Time: \(time)")
                     .font(.largeTitle)
-                Text("\(room)")
+                Text(room)
                     .font(.largeTitle)
                 Text(description)
 
@@ -52,7 +59,8 @@ struct EventInfoView: View {
                     ZStack {
                         RoundedRectangle(cornerRadius: 30)
                             .foregroundColor(Color(red: 1.0, green: 0.733, blue: 0.0))
-                        Text(perk).foregroundColor(.white)
+                        Text(perk)
+                            .foregroundColor(.white)
                     }
                 }
 
@@ -85,11 +93,11 @@ struct EventInfoView: View {
 #Preview {
     EventInfoView(
         showEvent: .constant(true),
-//        image: Image(systemName: "photo"),
+        imagePath: "tu-logo.png", // Placeholder
         title: "Event Title",
         time: "10:00 AM",
         room: "Room 204",
-        description: "hope this works",
-        perks: ["free food", "arts"]
+        description: "Hope this works",
+        perks: ["Free food", "Arts"]
     )
 }

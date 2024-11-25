@@ -137,7 +137,7 @@ struct EventCard: View {
     var body: some View {
         if let event {
             CardView(
-                imagePath: imagePath,
+                imagePath: imagePath ?? "tu-logo.png",
                 title: event.eventName ?? "boof",
                 time: date,
                 room: event.eventLocation ?? "boof"
@@ -148,7 +148,7 @@ struct EventCard: View {
             .fullScreenCover(isPresented: $showEvent) {
                 EventInfoView(
                     showEvent: $showEvent,
-//                    image: AsyncImage(url: URL(string: imagePath)),
+                    imagePath: imagePath,
                     title: event.eventName ?? "boof",
                     time: date,
                     room: event.eventLocation ?? "boof",
@@ -156,7 +156,6 @@ struct EventCard: View {
                     perks: event.perks ?? ["boof"]
                 )
             }
-
         }
     }
 }
