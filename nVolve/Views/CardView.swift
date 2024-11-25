@@ -17,11 +17,16 @@ struct CardView: View {
         VStack(alignment: .leading, spacing: 4) {
             if let imagePath = imagePath {
                 AsyncImage(url: URL(string: imagePath)) {
-                    image in image.resizable()
+                    image in image
+                        .resizable()
                         .scaledToFit()
                         .frame(height: 120)
-//                        .clipped()
+                        .clipped()
                         .cornerRadius(8)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 8)
+                                .stroke(Color.purple, lineWidth: 1)
+                        )
                 } placeholder: {
                     ProgressView("Boof")
                 }
@@ -55,5 +60,18 @@ struct CardView: View {
                 .stroke(Color.yellow, lineWidth: 1)
         )
         .shadow(color: Color.gray.opacity(0.2), radius: 2, x: 0, y: 1)
+    }
+}
+
+struct Card_Previews: PreviewProvider {
+    static var previews: some View {
+        CardView(
+            imagePath: "https://via.placeholder.com/300",
+            title: "Event Title",
+            time: "10:00 AM",
+            room: "Room 204"
+        )
+        .previewLayout(.sizeThatFits)
+        .padding()
     }
 }
