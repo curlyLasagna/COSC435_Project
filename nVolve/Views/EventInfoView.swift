@@ -1,5 +1,5 @@
 //
-//  Eventinfo.swift
+//  EventInfoView.swift
 //  nVolve
 //
 //  Created by Rasheed Nolley on 11/11/24.
@@ -9,21 +9,15 @@ import SwiftUI
 
 struct EventInfoView: View {
     @Binding var showEvent: Bool
-//    var image: Image
-    var title: String
-    var time: String
-    var room: String
-    var description: String
+    var event: InvolvedEvent
     @State private var favorited = false
-
-    var perks: [String]
 
     var body: some View {
         ZStack {
             VStack(alignment: .leading) {
                 HStack {
-                    Text(title)
-                        .font(.system(size: 50))
+                    Text(event.eventName ?? "No Title")
+                        .font(.system(size: 30))
                         .padding(.leading)
                     Spacer()
                     Image(systemName: "x.circle")
@@ -36,48 +30,70 @@ struct EventInfoView: View {
                 }
                 .padding(.top)
 
-//                image
-//                    .resizable()
-//                    .scaledToFit()
+                if let imagePath = event.imagePath {
+                    AsyncImage(url: URL(string: "https://se-images.campuslabs.com/clink/images/\(imagePath)")) { image in
+                        image.resizable()
+                            .scaledToFit()
+                    } placeholder: {
+                        ProgressView()
+                    }
+                }
 
-                Text("Time: \(time)")
-                    .font(.largeTitle)
-                Text("\(room)")
-                    .font(.largeTitle)
-                Text(description)
+                Text("Time: \(event.startDate ?? "No Time")")
+                    .font(.title2)
+                Text(event.eventLocation ?? "No Location")
+                    .font(.title2)
+                Text(event.eventDescription ?? "No Description")
+                    .padding(.top)
 
                 Spacer()
 
-                List(perks, id: \.self) { perk in
-                    ZStack {
-                        RoundedRectangle(cornerRadius: 30)
-                            .foregroundColor(Color(red: 1.0, green: 0.733, blue: 0.0))
-                        Text(perk).foregroundColor(.white)
+                if let perks = event.perks {
+                    ForEach(perks, id: \.self) { perk in
+                        Text(perk)
+                            .padding()
+                            .background(Color.yellow)
+                            .cornerRadius(8)
+                            .foregroundColor(.black)
                     }
                 }
 
                 HStack {
                     Spacer()
-                    ZStack {
-                        RoundedRectangle(cornerRadius: 20)
-                            .foregroundColor(.blue)
-                            .frame(width: 300, height: 50)
+                    Button(action: {
+                        // Handle Get Directions
+                    }) {
                         Text("Get Directions")
+                            .font(.headline)
                             .foregroundColor(.white)
-                            .font(.system(size: 20))
-                            .fontWeight(.bold)
+                            .padding()
+                            .frame(width: 200)
+                            .background(Color.blue)
+                            .cornerRadius(10)
                     }
 
-                    Image(systemName: favorited ? "heart.fill" : "heart")
-                        .font(.system(size: 30))
-                        .foregroundColor(.red)
-                        .frame(height: 70)
-                        .onTapGesture {
-                            favorited.toggle()
-                        }
+                    Button(action: {
+                        favorited.toggle()
+                    }) {
+                        Image(systemName: favorited ? "heart.fill" : "heart")
+                            .font(.system(size: 30))
+                            .foregroundColor(.red)
+                            .padding()
+                    }
                     Spacer()
                 }
+                .onChange(of: favorited) { newValue in
+                    if newValue {
+                        NotificationsManager.shared.scheduleNotification(for: event)
+                    } else {
+                        NotificationsManager.shared.cancelNotification(for: event)
+                    }
+                }
             }
+            .padding()
+        }
+        .onAppear {
+            favorited = false // Set initial state based on user's subscription status if available
         }
     }
 }
@@ -85,11 +101,20 @@ struct EventInfoView: View {
 #Preview {
     EventInfoView(
         showEvent: .constant(true),
-//        image: Image(systemName: "photo"),
-        title: "Event Title",
-        time: "10:00 AM",
-        room: "Room 204",
-        description: "hope this works",
-        perks: ["free food", "arts"]
+        event: InvolvedEvent(
+            id: "1",
+            orgName: "Org",
+            orgPhoto: nil,
+            eventName: "Sample Event",
+            eventDescription: "This is a sample event description.",
+            eventLocation: "Room 204",
+            startDate: "2024-11-21T10:00:00Z",
+            endDate: nil,
+            imagePath: nil,
+            eventTheme: nil,
+            latitude: "39.394839",
+            longitude: "-76.610880",
+            perks: ["Free Food", "Networking"]
+        )
     )
 }

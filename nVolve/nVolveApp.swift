@@ -9,6 +9,10 @@ import SwiftUI
 
 @main
 struct nVolveApp: App {
+    init() {
+        NotificationsManager.shared.requestNotificationPermission()
+    }
+
     var body: some Scene {
         WindowGroup {
             ContentView()

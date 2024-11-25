@@ -5,6 +5,7 @@ struct ContentView: View {
     private var contentViewModel = ContentViewModel()
     @StateObject private var filterViewModel = FilterViewModel()
     @State private var showingFilters = false
+    @StateObject private var locationManager = LocationManager()
 
     var body: some View {
         ZStack {
@@ -24,6 +25,9 @@ struct ContentView: View {
         }
         .onAppear {
             contentViewModel.fetchTodayEvents()
+        }
+        .onChange(of: contentViewModel.events) { oldEvents, newEvents in
+            locationManager.updateEvents(newEvents)
         }
     }
 }
@@ -109,54 +113,53 @@ struct EventsHeader: View {
 struct EventListSection: View {
     var viewModel: ContentViewModel
     @State private var showEvent = false
+    @State private var selectedEvent: InvolvedEvent?
 
     var body: some View {
         ScrollView(.horizontal, showsIndicators: true) {
             HStack(spacing: 10) {
                 ForEach(viewModel.events.indices, id: \.self) { index in
+                    let event = viewModel.events[index]
                     EventCard(
-                        event: viewModel.events[index],
-                        date: viewModel.getDates(dateAsString: viewModel.events[index].startDate),
-                        imagePath: viewModel.getImages(imgPath: viewModel.events[index].imagePath),
-                        showEvent: $showEvent
+                        event: event,
+                        date: viewModel.getDates(dateAsString: event.startDate),
+                        imagePath: viewModel.getImages(imgPath: event.imagePath),
+                        showEvent: $showEvent,
+                        selectedEvent: $selectedEvent
                     )
                 }
             }
             .padding(.horizontal)
         }
         .background(Color.gray)
+        .sheet(isPresented: $showEvent) {
+            if let event = selectedEvent {
+                EventInfoView(
+                    showEvent: $showEvent,
+                    event: event
+                )
+            }
+        }
     }
 }
 
 struct EventCard: View {
-    let event: InvolvedEvent?
+    let event: InvolvedEvent
     let date: String
     let imagePath: String?
     @Binding var showEvent: Bool
+    @Binding var selectedEvent: InvolvedEvent?
 
     var body: some View {
-        if let event {
-            CardView(
-                imagePath: imagePath,
-                title: event.eventName ?? "boof",
-                time: date,
-                room: event.eventLocation ?? "boof"
-            )
-            .onTapGesture {
-                showEvent = true
-            }
-            .fullScreenCover(isPresented: $showEvent) {
-                EventInfoView(
-                    showEvent: $showEvent,
-//                    image: AsyncImage(url: URL(string: imagePath)),
-                    title: event.eventName ?? "boof",
-                    time: date,
-                    room: event.eventLocation ?? "boof",
-                    description: event.eventDescription ?? "boof",
-                    perks: event.perks ?? ["boof"]
-                )
-            }
-
+        CardView(
+            imagePath: imagePath,
+            title: event.eventName ?? "No Title",
+            time: date,
+            room: event.eventLocation ?? "No Location"
+        )
+        .onTapGesture {
+            selectedEvent = event
+            showEvent = true
         }
     }
 }

@@ -14,80 +14,53 @@ import SwiftUI
     var showEventInfo: Bool = false
     var showingFilters: Bool = false
     var events: [InvolvedEvent] = []
-    // ':' is encoded as %3
-    // 'T' is the separator between time and date
+
     func fetchTodayEvents() {
-        let encodedStart = ISO8601DateFormatter().string(from: Date())
-            .addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)
+        let isoFormatter = ISO8601DateFormatter()
+        isoFormatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
 
-        let encodedEnd = ISO8601DateFormatter().string(
-            from: Date().advanced(by: 86400)
-        ).addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)
+        guard let encodedStart = isoFormatter.string(from: Date()).addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
+              let encodedEnd = isoFormatter.string(from: Date().addingTimeInterval(86400)).addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)
+        else { return }
 
-        let endpoint =
-            "https://involved.towson.edu/api/discovery/event/search? startsAfter=\(encodedStart!)endsBefore=\(encodedEnd!)"
-        AF.request(endpoint).responseDecodable(of: InvolvedEvents.self) {
-            response in
+        let endpoint = "https://involved.towson.edu/api/discovery/event/search?startsAfter=\(encodedStart)&endsBefore=\(encodedEnd)"
+        AF.request(endpoint).responseDecodable(of: InvolvedEvents.self) { response in
             switch response.result {
             case .success(let data):
                 self.events = data.value
-                
-//                // Debug statements for testing
-//                for event in self.events {
-//                    print("Event ID: \(event.id ?? "No ID")")
-//                    let mirror = Mirror(reflecting: event)
-//                    for child in mirror.children {
-//                        if let key = child.label {
-//                            print("\(key): \(child.value)")
-//                        }
-//                    }
-//                    print("---")
-//                }
             case .failure(let err):
                 print(err)
             }
         }
     }
-    
+
     func getCoordinates(latitude: String?, longitude: String?) -> CLLocationCoordinate2D {
-        // Convert string into
-        if let latitude = Double(latitude ?? "39.394839"), let longitude = Double(longitude ?? "76.610880") {
-            return CLLocationCoordinate2D(latitude: Double(latitude), longitude: Double(longitude))
+        if let latitude = Double(latitude ?? ""), let longitude = Double(longitude ?? "") {
+            return CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
         }
-        // Defaults to Union
-        return CLLocationCoordinate2D(latitude: 39.394839, longitude: 76.610880)
+        // Defaults to Union coordinates
+        return CLLocationCoordinate2D(latitude: 39.394839, longitude: -76.610880)
     }
-    
+
     func getImages(imgPath: String?) -> String {
-        // To get the full image path, prepend the returned image path with https://se-images.campuslabs.com/clink/images/
         if let fullImgPath = imgPath {
-            return  "https://se-images.campuslabs.com/clink/images/" + fullImgPath
+            return "https://se-images.campuslabs.com/clink/images/" + fullImgPath
         }
         return ""
     }
-    
+
     func getDates(dateAsString: String?) -> String {
         let isoFormatter = ISO8601DateFormatter()
-        isoFormatter.formatOptions = [
-            .withFullDate,
-//            .withTime,
-        ]
-       
-        guard let createdDate = isoFormatter.date(from: dateAsString ?? "Boof") else {
-                  return "No date"
-              }
-//        let readableFormatter = DateFormatter()
-//        readableFormatter.dateStyle = .medium
-//        readableFormatter.timeStyle = .short
-        
-        return DateFormatter().string(from: createdDate)
-    }
+        isoFormatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
 
-    func fetchEventsByPerks() {
+        guard let dateString = dateAsString,
+              let date = isoFormatter.date(from: dateString)
+        else { return "No date" }
 
-    }
+        let readableFormatter = DateFormatter()
+        readableFormatter.dateStyle = .medium
+        readableFormatter.timeStyle = .short
 
-    func fetchEventsByTheme() {
-
+        return readableFormatter.string(from: date)
     }
 }

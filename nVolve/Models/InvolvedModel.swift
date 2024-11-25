@@ -7,7 +7,7 @@
 
 import SwiftUICore
 
-struct InvolvedEvent: Decodable, Identifiable {
+struct InvolvedEvent: Decodable, Identifiable, Equatable {
     let id: String?
     let orgName: String?
     let orgPhoto: String?
