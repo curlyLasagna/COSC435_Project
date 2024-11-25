@@ -8,23 +8,24 @@
 import SwiftUI
 
 struct CardView: View {
-    var image: Image
+    var imagePath: String?
     var title: String
     var time: String
     var room: String
 
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
-            image
-                .resizable()
-                .scaledToFit()
-                .frame(height: 120)
-                .clipped()
-                .cornerRadius(8)
-                .overlay(
-                    RoundedRectangle(cornerRadius: 8)
-                        .stroke(Color.purple, lineWidth: 1)
-                )
+            if let imagePath = imagePath {
+                AsyncImage(url: URL(string: imagePath)) {
+                    image in image.resizable()
+                        .scaledToFit()
+                        .frame(height: 120)
+//                        .clipped()
+                        .cornerRadius(8)
+                } placeholder: {
+                    ProgressView("Boof")
+                }
+            }
 
             VStack(alignment: .leading, spacing: 3) {
                 Text(title)
@@ -54,18 +55,5 @@ struct CardView: View {
                 .stroke(Color.yellow, lineWidth: 1)
         )
         .shadow(color: Color.gray.opacity(0.2), radius: 2, x: 0, y: 1)
-    }
-}
-
-struct Card_Previews: PreviewProvider {
-    static var previews: some View {
-        CardView(
-            image: Image(systemName: "photo"),
-            title: "Event Title",
-            time: "10:00 AM",
-            room: "Room 204"
-        )
-        .previewLayout(.sizeThatFits)
-        .padding()
     }
 }
