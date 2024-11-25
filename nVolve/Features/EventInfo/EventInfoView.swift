@@ -43,7 +43,7 @@ struct EventInfoView: View {
                             .resizable()
                             .scaledToFit()
                     } placeholder: {
-                        ProgressView()
+                        ProgressView() // Needa define this
                     }
                 }
 
