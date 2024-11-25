@@ -14,6 +14,7 @@ struct ContentView: View {
     @StateObject private var viewModel = Markers()
     @State private var showEvent = false
     @State private var showingFilters = false
+    @State private var reset = false
     let manager = CLLocationManager()
 //    @State private var userLocation = manager.location
     let filterViewModel = FilterViewModel()
@@ -57,7 +58,9 @@ struct ContentView: View {
                         }
                         UserAnnotation()
                     }.mapControls{
-                        MapUserLocationButton()
+                        MapUserLocationButton().onTapGesture {
+                            reset=true
+                        }
                         MapPitchToggle()
                     
                     }
@@ -68,6 +71,12 @@ struct ContentView: View {
                     .mapStyle(.standard)
                     .frame(height: 400)
                     .colorScheme(.dark)
+                    if reset == true {
+                        Button("Reset Camera"){
+                            reset=false
+                        }
+                    }
+                    
                 }
 
                 
