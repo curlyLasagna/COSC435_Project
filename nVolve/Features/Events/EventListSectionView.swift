@@ -46,7 +46,7 @@ struct EventListSection: View {
             )
         }
         .background(
-            Color.gray
+            Color.white
         )
     }
 }
