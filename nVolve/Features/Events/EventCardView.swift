@@ -15,8 +15,8 @@ struct EventCard: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
-            if let imagePath = imagePath {
-                AsyncImage(url: URL(string: imagePath)) { image in
+            if let imagePath = imagePath, let url = URL(string: imagePath) {
+                AsyncImage(url: url) { image in
                     image
                         .resizable()
                         .scaledToFit()
@@ -64,29 +64,17 @@ struct EventCard: View {
             showEvent = true
         }
         .fullScreenCover(isPresented: $showEvent) {
-            EventInfoView(
+            EventInfo(
                 showEvent: $showEvent,
+                imagePath: imagePath,
                 title: event?.eventName ?? "Event Title",
                 time: date,
                 room: event?.eventLocation ?? "Room 204",
                 description: event?.eventDescription ?? "Description",
-                eventLat: String(format: "%.6f", event?.latitude ?? 0.0),
-                eventLng: String(format: "%.6f", event?.longitude ?? 0.0),
-                perks: event?.perks ?? ["Free Food", "Networking"]
+                eventLat: event?.latitude ?? "0.0",
+                eventLng: event?.longitude ?? "0.0",
+                perks: event?.perks ?? []
             )
         }
-    }
-}
-
-struct EventCard_Previews: PreviewProvider {
-    static var previews: some View {
-        EventCard(
-            event: nil,
-            date: "10:00 AM",
-            imagePath: "https://via.placeholder.com/300",
-            showEvent: .constant(false)
-        )
-        .previewLayout(.sizeThatFits)
-        .padding()
     }
 }
