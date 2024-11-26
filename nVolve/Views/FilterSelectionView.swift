@@ -20,7 +20,7 @@ struct FilterSectionView: View {
                 .foregroundColor(.white)
                 .padding(.bottom, 6)
 
-            FilterLayoutView(spacing: 8) {
+            FlowLayoutView(spacing: 8) {
                 ForEach(filters, id: \.self) { filter in
                     FilterChipView(
                         text: filter,

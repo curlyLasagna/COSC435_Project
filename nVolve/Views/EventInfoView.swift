@@ -1,5 +1,5 @@
 //
-//  EventInfoView.swift
+//  Eventinfo.swift
 //  nVolve
 //
 //  Created by Rasheed Nolley on 11/11/24.
@@ -9,12 +9,17 @@ import SwiftUI
 
 struct EventInfoView: View {
     @Binding var showEvent: Bool
-    var imagePath: String?
+//    var image: Image
     var title: String
     var time: String
     var room: String
     var description: String
     @State private var favorited = false
+    
+    // these are for placeholder data
+    var eventLat: String
+    var eventLng: String
+
 
     var perks: [String]
 
@@ -36,20 +41,13 @@ struct EventInfoView: View {
                 }
                 .padding(.top)
 
-                // Use AsyncImage to load image from URL
-                if let imagePath = imagePath, let url = URL(string: imagePath) {
-                    AsyncImage(url: url) { image in
-                        image
-                            .resizable()
-                            .scaledToFit()
-                    } placeholder: {
-                        ProgressView() // Needa define this
-                    }
-                }
+//                image
+//                    .resizable()
+//                    .scaledToFit()
 
                 Text("Time: \(time)")
                     .font(.largeTitle)
-                Text(room)
+                Text("\(room)")
                     .font(.largeTitle)
                 Text(description)
 
@@ -59,8 +57,7 @@ struct EventInfoView: View {
                     ZStack {
                         RoundedRectangle(cornerRadius: 30)
                             .foregroundColor(Color(red: 1.0, green: 0.733, blue: 0.0))
-                        Text(perk)
-                            .foregroundColor(.white)
+                        Text(perk).foregroundColor(.white)
                     }
                 }
 
@@ -74,6 +71,9 @@ struct EventInfoView: View {
                             .foregroundColor(.white)
                             .font(.system(size: 20))
                             .fontWeight(.bold)
+                    }.onTapGesture {
+                        openMapApp(latitude:eventLat , longitude: eventLng)
+                        showEvent = false
                     }
 
                     Image(systemName: favorited ? "heart.fill" : "heart")
@@ -93,11 +93,13 @@ struct EventInfoView: View {
 #Preview {
     EventInfoView(
         showEvent: .constant(true),
-        imagePath: "tu-logo.png", // Placeholder
+//        image: Image(systemName: "photo"),
         title: "Event Title",
         time: "10:00 AM",
         room: "Room 204",
-        description: "Hope this works",
-        perks: ["Free food", "Arts"]
+        description: "hope this works",
+        eventLat:"39.39069379520995",
+        eventLng:"-76.60563329053981",
+        perks: ["free food", "arts"]
     )
 }
