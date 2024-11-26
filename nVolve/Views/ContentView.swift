@@ -1,153 +1,91 @@
+// ContentView.swift
+// nVolve
 //
-//  ContentView.swift
-//  nVolve
-//
-//  Created by Abdalla Abdelmagid on 11/10/24.
+// Created by Abdalla Abdelmagid on 11/10/24.
 
-import SwiftUI
 import MapKit
+import SwiftUI
 import CoreLocation
 import CoreLocationUI
 
 struct ContentView: View {
     @State private var position: MapCameraPosition = .automatic
+    private var contentViewModel = ContentViewModel()
     @StateObject private var viewModel = Markers()
+    @StateObject private var filterViewModel = FilterViewModel()
     @State private var showEvent = false
     @State private var showingFilters = false
     @State private var reset = false
     let manager = CLLocationManager()
-//    @State private var userLocation = manager.location
-    let filterViewModel = FilterViewModel()
 
     var body: some View {
         ZStack {
             VStack(spacing: 0) {
-                HStack{
-                    Spacer()
-                    Image("tu-involved")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 100, height: 40).onTapGesture {
-                            position = .automatic
-                        }
-                    Spacer()
-                }
-                HStack {
-                    Text("Filters")
-                    Spacer()
-                    Button(action: {
-                        showingFilters.toggle()
-                    }) {
-                        Image(systemName: "slider.horizontal.3")
-                    }
-                }
+                // Filter Header Section
+                FilterHeader(showingFilters: $showingFilters)
 
-                .padding()
-                .overlay(
-                    Rectangle()
-                        .stroke(Color.black, lineWidth: 1)
-                )
-              
-               
+                // Map Section
                 ZStack(alignment: .topLeading) {
-                    // Map Layer
                     Map(position: $position) {
                         ForEach(viewModel.markers, id: \.name) { marker in
                             Marker(marker.name, systemImage: marker.image, coordinate: marker.coordinate)
                                 .tint(marker.color)
                         }
+                        ForEach(contentViewModel.events) { event in
+                            Marker(event.eventName ?? "Event", coordinate: contentViewModel.getCoordinates(latitude: event.latitude, longitude: event.longitude))
+                        }
                         UserAnnotation()
-                    }.mapControls{
+                    }
+                    .mapControls {
                         MapUserLocationButton().onTapGesture {
-                            reset=true
+                            reset = true
                         }
                         MapPitchToggle()
-                    
                     }
                     .onAppear {
                         manager.requestWhenInUseAuthorization()
                         manager.startUpdatingLocation()
+                        contentViewModel.fetchTodayEvents()
                     }
                     .mapStyle(.standard)
                     .frame(height: 400)
                     .colorScheme(.dark)
-                    if reset == true {
-                        Button("Reset Camera"){
-                            reset=false
+
+                    if reset {
+                        Button("Reset Camera") {
+                            reset = false
                         }
                     }
-                    
                 }
 
-                
-                
-               
+                // Events Header
+                EventsHeader()
 
-                HStack {
-                    Text("Events")
-                        .font(.title2)
-                        .fontWeight(.bold)
-                        .padding(.leading, 16)
-                    Spacer()
-                }
-                .padding(7)
-                .overlay(
-                    Rectangle()
-                        .stroke(Color.black, lineWidth: 1)
-                )
-
+                // Event List Section
                 ScrollView(.horizontal, showsIndicators: true) {
                     HStack(spacing: 10) {
-                        ForEach(0..<15, id: \.self) { index in
-                            CardView(
-                                image: Image(systemName: "photo"),
-                                title: "Event \(index + 1)",
-                                time: "10:00 AM",
-                                room: "Room 204"
+                        ForEach(contentViewModel.events.indices, id: \.self) { index in
+                            EventCard(
+                                event: contentViewModel.events[index],
+                                date: contentViewModel.getDates(dateAsString: contentViewModel.events[index].startDate),
+                                imagePath: contentViewModel.getImages(imgPath: contentViewModel.events[index].imagePath),
+                                showEvent: $showEvent
                             )
-                            .onTapGesture {
-                                showEvent = true
-                            }
-                            .fullScreenCover(isPresented: $showEvent) {
-                                EventInfoView(
-                                    showEvent: $showEvent,
-                                    image: Image(systemName: "photo"),
-                                    title: "Event Title",
-                                    time: "10:00 AM",
-                                    room: "Room 204",
-                                    description: "hope this works",
-                                    eventLat: 39.39069379520995,
-                                    eventLng: -76.60563329053981,
-                                    perks: ["free food", "arts"]
-                                )
-                            }
                         }
                     }
                     .background(Color.white)
                     .padding(.horizontal)
                 }
             }
-           
 
-            // Overlay FilterView when showingFilters is true
+            // Overlay Filter View
             if showingFilters {
-                Color.black.opacity(0.3)
-                    .ignoresSafeArea()
-                    .onTapGesture {
-                        showingFilters = false
-                    }
-                    
-
-                FilterView(
-                    viewModel: filterViewModel,
-                    dismiss: { showingFilters = false }
+                FilterOverlay(
+                    filterViewModel: filterViewModel,
+                    showingFilters: $showingFilters
                 )
-                .transition(.move(edge: .trailing))
             }
         }
     }
 }
 
-#Preview {
-    ContentView()
-}
