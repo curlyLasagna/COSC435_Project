@@ -5,8 +5,6 @@
 
 import MapKit
 import SwiftUI
-import CoreLocation
-import CoreLocationUI
 
 struct ContentView: View {
     @State private var position: MapCameraPosition = .automatic
@@ -14,8 +12,6 @@ struct ContentView: View {
     @StateObject private var viewModel = Markers()
     @StateObject private var filterViewModel = FilterViewModel()
     @State private var showingFilters = false
-    @State private var reset = false
-    let manager = CLLocationManager()
 
     var body: some View {
         ZStack {
@@ -37,39 +33,10 @@ struct ContentView: View {
                 FilterHeader(showingFilters: $showingFilters)
 
                 // Map Section
-                ZStack(alignment: .topLeading) {
-                    Map(position: $position) {
-                        // Add Markers for static and dynamic events
-                        ForEach(viewModel.markers, id: \.name) { marker in
-                            Marker(marker.name, systemImage: marker.image, coordinate: marker.coordinate)
-                                .tint(marker.color)
-                        }
-                        ForEach(contentViewModel.events) { event in
-                            Marker(event.eventName ?? "Event", coordinate: contentViewModel.getCoordinates(latitude: event.latitude, longitude: event.longitude))
-                        }
-                        UserAnnotation()
-                    }
-                    .mapControls {
-                        MapUserLocationButton().onTapGesture {
-                            reset = true
-                        }
-                        MapPitchToggle()
-                    }
-                    .onAppear {
-                        manager.requestWhenInUseAuthorization()
-                        manager.startUpdatingLocation()
-                        contentViewModel.fetchTodayEvents()
-                    }
-                    .mapStyle(.standard)
-                    .frame(height: 400)
-                    .colorScheme(.dark)
-
-                    if reset {
-                        Button("Reset Camera") {
-                            reset = false
-                        }
-                    }
-                }
+                MapSection(
+                    viewModel: contentViewModel,
+                    markers: viewModel
+                )
 
                 // Events Header
                 EventsHeader()
