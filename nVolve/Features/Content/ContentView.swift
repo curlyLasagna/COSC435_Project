@@ -21,6 +21,18 @@ struct ContentView: View {
     var body: some View {
         ZStack {
             VStack(spacing: 0) {
+                // App Header
+                HStack{
+                    Spacer()
+                    Image("tu-involved") // Shouldn't be Involved @ TU
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 100, height: 40).onTapGesture {
+                            position = .automatic
+                        }
+                    Spacer()
+                }
+                
                 // Filter Header Section
                 FilterHeader(showingFilters: $showingFilters)
 
@@ -88,4 +100,3 @@ struct ContentView: View {
         }
     }
 }
-

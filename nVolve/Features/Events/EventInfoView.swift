@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct EventInfoView: View {
+struct EventInfo: View {
     @Binding var showEvent: Bool
 //    var image: Image
     var title: String
@@ -88,18 +88,4 @@ struct EventInfoView: View {
             }
         }
     }
-}
-
-#Preview {
-    EventInfoView(
-        showEvent: .constant(true),
-//        image: Image(systemName: "photo"),
-        title: "Event Title",
-        time: "10:00 AM",
-        room: "Room 204",
-        description: "hope this works",
-        eventLat:"39.39069379520995",
-        eventLng:"-76.60563329053981",
-        perks: ["free food", "arts"]
-    )
 }

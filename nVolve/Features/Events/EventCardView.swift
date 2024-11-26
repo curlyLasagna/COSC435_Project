@@ -64,7 +64,7 @@ struct EventCard: View {
             showEvent = true
         }
         .fullScreenCover(isPresented: $showEvent) {
-            EventInfoView(
+            EventInfo(
                 showEvent: $showEvent,
                 title: event?.eventName ?? "Event Title",
                 time: date,
@@ -75,18 +75,5 @@ struct EventCard: View {
                 perks: event?.perks ?? ["Free Food", "Networking"]
             )
         }
-    }
-}
-
-struct EventCard_Previews: PreviewProvider {
-    static var previews: some View {
-        EventCard(
-            event: nil,
-            date: "10:00 AM",
-            imagePath: "https://via.placeholder.com/300",
-            showEvent: .constant(false)
-        )
-        .previewLayout(.sizeThatFits)
-        .padding()
     }
 }
