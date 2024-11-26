@@ -13,7 +13,6 @@ struct ContentView: View {
     private var contentViewModel = ContentViewModel()
     @StateObject private var viewModel = Markers()
     @StateObject private var filterViewModel = FilterViewModel()
-    @State private var showEvent = false
     @State private var showingFilters = false
     @State private var reset = false
     let manager = CLLocationManager()
@@ -22,23 +21,25 @@ struct ContentView: View {
         ZStack {
             VStack(spacing: 0) {
                 // App Header
-                HStack{
+                HStack {
                     Spacer()
-                    Image("tu-involved") // Shouldn't be Involved @ TU
+                    Image("tu-involved")
                         .resizable()
                         .scaledToFit()
-                        .frame(width: 100, height: 40).onTapGesture {
+                        .frame(width: 100, height: 40)
+                        .onTapGesture {
                             position = .automatic
                         }
                     Spacer()
                 }
-                
+
                 // Filter Header Section
                 FilterHeader(showingFilters: $showingFilters)
 
                 // Map Section
                 ZStack(alignment: .topLeading) {
                     Map(position: $position) {
+                        // Add Markers for static and dynamic events
                         ForEach(viewModel.markers, id: \.name) { marker in
                             Marker(marker.name, systemImage: marker.image, coordinate: marker.coordinate)
                                 .tint(marker.color)
@@ -74,20 +75,7 @@ struct ContentView: View {
                 EventsHeader()
 
                 // Event List Section
-                ScrollView(.horizontal, showsIndicators: true) {
-                    HStack(spacing: 10) {
-                        ForEach(contentViewModel.events.indices, id: \.self) { index in
-                            EventCard(
-                                event: contentViewModel.events[index],
-                                date: contentViewModel.getDates(dateAsString: contentViewModel.events[index].startDate),
-                                imagePath: contentViewModel.getImages(imgPath: contentViewModel.events[index].imagePath),
-                                showEvent: $showEvent
-                            )
-                        }
-                    }
-                    .background(Color.white)
-                    .padding(.horizontal)
-                }
+                EventListSection(viewModel: contentViewModel)
             }
 
             // Overlay Filter View

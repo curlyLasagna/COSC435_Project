@@ -4,6 +4,7 @@
 //
 //  Created by Romerico David on 11/25/24.
 //
+
 import SwiftUI
 
 struct EventsHeader: View {
