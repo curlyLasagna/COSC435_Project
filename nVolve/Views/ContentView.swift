@@ -108,17 +108,15 @@ struct EventsHeader: View {
 
 struct EventListSection: View {
     var viewModel: ContentViewModel
-    @State private var showEvent = false
 
     var body: some View {
         ScrollView(.horizontal, showsIndicators: true) {
             HStack(spacing: 10) {
-                ForEach(viewModel.events.indices, id: \.self) { index in
+                ForEach(viewModel.events) { event in
                     EventCard(
-                        event: viewModel.events[index],
-                        date: viewModel.getStartTime(dateAsString: viewModel.events[index].startDate),
-                        imagePath: viewModel.getImages(imgPath: viewModel.events[index].imagePath),
-                        showEvent: $showEvent
+                        event: event,
+                        date: viewModel.getStartTime(dateAsString: event.startDate),
+                        imagePath: viewModel.getImages(imgPath: event.imagePath)
                     )
                 }
             }
@@ -132,7 +130,7 @@ struct EventCard: View {
     let event: InvolvedEvent?
     let date: String
     let imagePath: String?
-    @Binding var showEvent: Bool
+    @State private var showEvent: Bool = false
 
     var body: some View {
         if let event {
