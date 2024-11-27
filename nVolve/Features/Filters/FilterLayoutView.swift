@@ -6,16 +6,23 @@
 
 import SwiftUI
 
-struct FlowLayoutView: Layout {
+struct FilterLayout: Layout {
     var spacing: CGFloat = 8
 
-    func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) -> CGSize {
-        let result = FlowResult(in: proposal.width ?? 0, subviews: subviews, spacing: spacing)
+    func sizeThatFits(
+        proposal: ProposedViewSize, subviews: Subviews, cache: inout ()
+    ) -> CGSize {
+        let result = FlowResult(
+            in: proposal.width ?? 0, subviews: subviews, spacing: spacing)
         return result.size
     }
 
-    func placeSubviews(in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) {
-        let result = FlowResult(in: bounds.width, subviews: subviews, spacing: spacing)
+    func placeSubviews(
+        in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews,
+        cache: inout ()
+    ) {
+        let result = FlowResult(
+            in: bounds.width, subviews: subviews, spacing: spacing)
         for (index, line) in result.lines.enumerated() {
             let y = bounds.minY + result.lineOffsets[index]
             var x = bounds.minX
@@ -41,7 +48,9 @@ struct FlowLayoutView: Layout {
             for subview in subviews {
                 let size = subview.sizeThatFits(.unspecified)
 
-                if currentX + size.width > maxWidth && !lines[lines.count - 1].isEmpty {
+                if currentX + size.width > maxWidth
+                    && !lines[lines.count - 1].isEmpty
+                {
                     currentX = 0
                     currentY += currentLineHeight + spacing
                     currentLineHeight = 0

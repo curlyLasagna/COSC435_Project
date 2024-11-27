@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct FilterChipView: View {
+struct FilterChip: View {
     let text: String
     let isSelected: Bool
     let onTap: () -> Void

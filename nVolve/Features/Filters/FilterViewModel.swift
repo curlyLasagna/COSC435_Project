@@ -16,9 +16,9 @@ class FilterViewModel: ObservableObject {
         "Open House", "Spiritual", "Meeting/Special Gathering",
         "Social/Entertainment", "Fundraising", "Learning", "Training",
     ]
-    
+
     let perkFilters = ["Free Food", "Free Stuff"]
-    
+
     let locationFilters = [
         "Nearby", "Union", "Psychology Building", "Liberal Arts", "Arts",
         "Newman Center", "TU Arena", "Tiger Plaza", "Library",
