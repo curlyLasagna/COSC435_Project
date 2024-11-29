@@ -60,6 +60,7 @@
 				A00D746F2CB87E0300682203 /* Sources */,
 				A00D74702CB87E0300682203 /* Frameworks */,
 				A00D74712CB87E0300682203 /* Resources */,
+				A0A645FE2CFA6C2500BFE0B5 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -122,6 +123,26 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		A0A645FE2CFA6C2500BFE0B5 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "cp ./.scripts/pre-commit ./.git/hooks\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		A00D746F2CB87E0300682203 /* Sources */ = {
@@ -263,6 +284,7 @@
 				DEVELOPMENT_ASSET_PATHS = "\"nVolve/Preview Content\"";
 				DEVELOPMENT_TEAM = H73DG393SF;
 				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "We need your location";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -293,6 +315,7 @@
 				DEVELOPMENT_ASSET_PATHS = "\"nVolve/Preview Content\"";
 				DEVELOPMENT_TEAM = H73DG393SF;
 				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "We need your location";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
