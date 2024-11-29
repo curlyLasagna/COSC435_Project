@@ -4,6 +4,7 @@
 //
 //  Created by Romerico David on 11/25/24.
 //
+
 import SwiftUI
 
 struct EventListSection: View {
@@ -44,7 +45,7 @@ struct EventListSection: View {
             )
         }
         .background(
-            Color.gray
+            Color.white
         )
     }
 }

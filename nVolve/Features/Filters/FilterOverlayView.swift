@@ -22,7 +22,7 @@ struct FilterOverlay: View {
                     showingFilters = false
                 }
 
-            FilterView(
+            FilterBody(
                 viewModel: filterViewModel,
                 dismiss: {
                     showingFilters = false

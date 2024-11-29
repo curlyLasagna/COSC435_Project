@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct FilterSectionView: View {
+struct FilterSection: View {
     let title: String
     let filters: [String]
     @Binding var selectedFilters: Set<String>
@@ -20,9 +20,9 @@ struct FilterSectionView: View {
                 .foregroundColor(.white)
                 .padding(.bottom, 6)
 
-            FlowLayoutView(spacing: 8) {
+            FilterLayout(spacing: 8) {
                 ForEach(filters, id: \.self) { filter in
-                    FilterChipView(
+                    FilterChip(
                         text: filter,
                         isSelected: selectedFilters.contains(filter)
                     ) {
