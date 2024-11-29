@@ -86,7 +86,7 @@ struct EventCard_Previews: PreviewProvider {
             event: nil,
             date: "10:00 AM",
             imagePath: "https://via.placeholder.com/300",
-            showEvent: .constant(false)
+            showEvent: false
         )
         .previewLayout(.sizeThatFits)
         .padding()
