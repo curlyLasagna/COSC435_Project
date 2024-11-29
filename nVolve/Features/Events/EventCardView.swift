@@ -11,7 +11,8 @@ struct EventCard: View {
     let event: InvolvedEvent?
     let date: String
     let imagePath: String?
-    @Binding var showEvent: Bool
+    
+    @State var showEvent: Bool = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
@@ -76,5 +77,18 @@ struct EventCard: View {
                 perks: event?.perks ?? []
             )
         }
+    }
+}
+
+struct EventCard_Previews: PreviewProvider {
+    static var previews: some View {
+        EventCard(
+            event: nil,
+            date: "10:00 AM",
+            imagePath: "https://via.placeholder.com/300",
+            showEvent: .constant(false)
+        )
+        .previewLayout(.sizeThatFits)
+        .padding()
     }
 }

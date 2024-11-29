@@ -29,15 +29,14 @@ struct EventListSection: View {
                             .events[index],
                         date:
                             viewModel
-                            .getDates(
+                            .getStartTime(
                                 dateAsString: viewModel.events[index].startDate
                             ),
                         imagePath:
                             viewModel
                             .getImages(
                                 imgPath: viewModel.events[index].imagePath
-                            ),
-                        showEvent: $showEvent
+                            )
                     )
                 }
             }
