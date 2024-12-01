@@ -11,11 +11,12 @@ struct EventCard: View {
     let event: InvolvedEvent?
     let date: String
     let imagePath: String?
-    
-    @State var showEvent: Bool = false
+
+    @State private var showEvent: Bool = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
+            // Event Image
             if let imagePath = imagePath, let url = URL(string: imagePath) {
                 AsyncImage(url: url) { image in
                     image
@@ -33,6 +34,7 @@ struct EventCard: View {
                 }
             }
 
+            // Event Details
             VStack(alignment: .leading, spacing: 3) {
                 Text(event?.eventName ?? "Event")
                     .font(.headline)
@@ -52,7 +54,6 @@ struct EventCard: View {
             .cornerRadius(8)
             .foregroundColor(.black)
         }
-        .foregroundColor(.black)
         .frame(width: 180, height: 240)
         .background(Color.white)
         .cornerRadius(12)
@@ -85,8 +86,7 @@ struct EventCard_Previews: PreviewProvider {
         EventCard(
             event: nil,
             date: "10:00 AM",
-            imagePath: "https://via.placeholder.com/300",
-            showEvent: false
+            imagePath: "https://via.placeholder.com/300"
         )
         .previewLayout(.sizeThatFits)
         .padding()
