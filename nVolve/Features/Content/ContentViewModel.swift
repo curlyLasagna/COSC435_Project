@@ -8,7 +8,6 @@
 import Alamofire
 import MapKit
 import SwiftUI
-import Combine
 
 @Observable class ContentViewModel {
     var position: MapCameraPosition = .automatic
