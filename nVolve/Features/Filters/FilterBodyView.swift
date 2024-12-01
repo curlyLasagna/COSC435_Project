@@ -14,7 +14,7 @@ struct FilterBody: View {
     var body: some View {
         ZStack {
             // TU grey background
-            Color(red: 0.235, green: 0.235, blue: 0.235)
+            Color(.white)
                 .ignoresSafeArea()
 
             // Content
@@ -25,11 +25,11 @@ struct FilterBody: View {
                         Text("FILTERS")
                             .font(.system(size: 28))
                             .fontWeight(.bold)
-                            .foregroundColor(.white)
+                            .foregroundColor(.black)
 
                         Spacer()
 
-                        Image("tu-logo")
+                        Image("tu-background")
                             .resizable()
                             .scaledToFit()
                             .frame(width: 75, height: 75)

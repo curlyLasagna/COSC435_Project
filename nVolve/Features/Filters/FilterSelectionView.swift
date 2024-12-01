@@ -17,7 +17,7 @@ struct FilterSection: View {
             Text(title)
                 .font(.system(size: 20))
                 .fontWeight(.bold)
-                .foregroundColor(.white)
+                .foregroundColor(.black)
                 .padding(.bottom, 6)
 
             FilterLayout(spacing: 8) {
