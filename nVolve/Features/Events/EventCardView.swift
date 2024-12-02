@@ -11,7 +11,7 @@ struct EventCard: View {
     let event: InvolvedEvent?
     let date: String
     let imagePath: String?
-    
+
     @State var showEvent: Bool = false
 
     var body: some View {
