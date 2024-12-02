@@ -6,5 +6,15 @@
 //
 
 class DataService {
-    func getStandardEvent()
+    func getStandardEvent() {
+
+    }
+
+    private func fetchInvolved() {
+
+    }
+
+    private func fetchEvents() {
+
+    }
 }
