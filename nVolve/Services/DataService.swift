@@ -6,5 +6,5 @@
 //
 
 class DataService {
-    
+    func getStandardEvent()
 }
