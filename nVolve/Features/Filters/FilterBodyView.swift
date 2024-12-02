@@ -13,18 +13,18 @@ struct FilterBody: View {
 
     var body: some View {
         ZStack {
-            // TU grey background
-            Color(.white)
+            // Background color
+            Color(.systemGray6)
                 .ignoresSafeArea()
 
             // Content
             ScrollView {
-                VStack(alignment: .leading, spacing: 16) {
+                VStack(alignment: .leading, spacing: 20) { // Reduced spacing here
                     // Header with Filters text and logo
                     HStack {
-                        Text("FILTERS")
-                            .font(.system(size: 28))
-                            .fontWeight(.bold)
+                        Text("Filters")
+                            .font(.title)
+                            .fontWeight(.semibold)
                             .foregroundColor(.black)
 
                         Spacer()
@@ -35,18 +35,19 @@ struct FilterBody: View {
                             .frame(width: 75, height: 75)
                     }
 
-                    VStack(alignment: .leading, spacing: 18) {
-                        FilterSection(
+                    // Filter Sections
+                    VStack(alignment: .leading, spacing: 16) { // Consistent spacing
+                        FilterSelection(
                             title: "Themes",
                             filters: viewModel.themeFilters,
                             selectedFilters: $viewModel.selectedFilters
                         )
-                        FilterSection(
+                        FilterSelection(
                             title: "Perks",
                             filters: viewModel.perkFilters,
                             selectedFilters: $viewModel.selectedFilters
                         )
-                        FilterSection(
+                        FilterSelection(
                             title: "Location",
                             filters: viewModel.locationFilters,
                             selectedFilters: $viewModel.selectedFilters
@@ -55,16 +56,18 @@ struct FilterBody: View {
 
                     Spacer()
 
-                    HStack(spacing: 10) {
+                    // Action Buttons
+                    HStack(spacing: 12) {
                         Button(action: viewModel.clearFilters) {
-                            Text("Clear filters")
-                                .font(.system(size: 20))
-                                .fontWeight(.bold)
+                            Text("Clear Filters")
+                                .font(.system(size: 18))
+                                .fontWeight(.medium)
                                 .foregroundColor(.black)
-                                .padding()
                                 .frame(maxWidth: .infinity)
-                                .background(Color.yellow)
+                                .padding()
+                                .background(Color.white)
                                 .cornerRadius(8)
+                                .shadow(radius: 2)
                         }
 
                         Button(action: {
@@ -72,13 +75,14 @@ struct FilterBody: View {
                             dismiss()
                         }) {
                             Text("Apply")
-                                .font(.system(size: 20))
-                                .fontWeight(.bold)
-                                .foregroundColor(.white)
-                                .padding()
+                                .font(.system(size: 18))
+                                .fontWeight(.medium)
+                                .foregroundColor(.black)
                                 .frame(maxWidth: .infinity)
-                                .background(Color.blue)
+                                .padding()
+                                .background(Color.yellow)
                                 .cornerRadius(8)
+                                .shadow(radius: 2)
                         }
                     }
                     .padding(.bottom)
