@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct FilterView: View {
+struct FilterBody: View {
     @ObservedObject var viewModel: FilterViewModel
     var dismiss: () -> Void
 
@@ -36,17 +36,17 @@ struct FilterView: View {
                     }
 
                     VStack(alignment: .leading, spacing: 18) {
-                        FilterSectionView(
+                        FilterSection(
                             title: "Themes",
                             filters: viewModel.themeFilters,
                             selectedFilters: $viewModel.selectedFilters
                         )
-                        FilterSectionView(
+                        FilterSection(
                             title: "Perks",
                             filters: viewModel.perkFilters,
                             selectedFilters: $viewModel.selectedFilters
                         )
-                        FilterSectionView(
+                        FilterSection(
                             title: "Location",
                             filters: viewModel.locationFilters,
                             selectedFilters: $viewModel.selectedFilters
