@@ -11,11 +11,7 @@ struct EventCard: View {
     let event: InvolvedEvent?
     let date: String
     let imagePath: String?
-    var strippedEventDescription: String {
-            let strippedText = viewModel.stripHTML(text: event?.eventDescription)
-            print(strippedText)
-            return strippedText
-    }
+    var strippedEventDescription: String { return viewModel.stripHTML(text: event?.eventDescription) }
     var viewModel: ContentViewModel = ContentViewModel()
     @State var showEvent: Bool = false
 
