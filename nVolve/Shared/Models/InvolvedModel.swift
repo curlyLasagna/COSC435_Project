@@ -45,3 +45,12 @@ struct InvolvedEvents: Decodable {
         case value
     }
 }
+
+extension InvolvedEvent {
+    var startDateParsed: Date? {
+        guard let startDate = startDate else { return nil }
+        let formatter = ISO8601DateFormatter()
+        return formatter.date(from: startDate)
+    }
+}
+
