@@ -26,11 +26,6 @@ struct MapSection: View {
                     Marker(marker.name, systemImage: marker.image, coordinate: marker.coordinate)
                         .tint(marker.color)
                 }
-                // Dynamic Markers
-          //                ForEach(viewModel.events) { event in
-          //                    Marker(event.eventName ?? "Event", coordinate: viewModel.getCoordinates(latitude: event.latitude, longitude: event.longitude))
-          //                }
-               
                 UserAnnotation()
             }
             .mapControls{
