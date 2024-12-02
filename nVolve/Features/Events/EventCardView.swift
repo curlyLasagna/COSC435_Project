@@ -11,8 +11,9 @@ struct EventCard: View {
     let event: InvolvedEvent?
     let date: String
     let imagePath: String?
-
-    @State private var showEvent: Bool = false
+    var viewModel: ContentViewModel = ContentViewModel()
+    var strippedEventDescription: String { return viewModel.stripHTML(text: event?.eventDescription) }
+    @State var showEvent: Bool = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
@@ -33,8 +34,7 @@ struct EventCard: View {
                     ProgressView("Loading...")
                 }
             }
-
-            // Event Details
+            
             VStack(alignment: .leading, spacing: 3) {
                 Text(event?.eventName ?? "Event")
                     .font(.headline)
@@ -45,7 +45,7 @@ struct EventCard: View {
                     .font(.caption)
                     .bold()
 
-                Text(event?.eventDescription ?? "Description")
+                Text(strippedEventDescription)
                     .font(.caption)
                     .lineLimit(2)
             }
@@ -72,7 +72,7 @@ struct EventCard: View {
                 title: event?.eventName ?? "Event Title",
                 time: date,
                 room: event?.eventLocation ?? "Room 204",
-                description: event?.eventDescription ?? "Description",
+                description: strippedEventDescription,
                 eventLat: event?.latitude ?? "0.0",
                 eventLng: event?.longitude ?? "0.0",
                 perks: event?.perks ?? []
@@ -86,7 +86,8 @@ struct EventCard_Previews: PreviewProvider {
         EventCard(
             event: nil,
             date: "10:00 AM",
-            imagePath: "https://via.placeholder.com/300"
+            imagePath: "https://via.placeholder.com/300",
+            showEvent: false
         )
         .previewLayout(.sizeThatFits)
         .padding()

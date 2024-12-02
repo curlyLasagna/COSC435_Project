@@ -79,6 +79,35 @@ import SwiftUI
         return readableFormatter.string(from: createdDate)
     }
 
+    func stripHTML(text: String?) -> String {
+        guard var result = text else { return "" }
+        
+        // Remove HTML tags using a regex
+        result = result.replacingOccurrences(of: "<[^>]+>", with: "", options: .regularExpression)
+        
+        // Decode and remove HTML entities like &nbsp;, &amp; into plain text equivalents
+        if let decodedData = result.data(using: .utf8) {
+            let attributedString = try? NSAttributedString(
+                data: decodedData,
+                options: [
+                    .documentType: NSAttributedString.DocumentType.html,
+                    .characterEncoding: String.Encoding.utf8.rawValue
+                ],
+                documentAttributes: nil
+            )
+            result = attributedString?.string ?? result
+        }
+        
+        // Replace non-breaking spaces
+        result = result.replacingOccurrences(of: "\u{00A0}", with: " ")
+        
+        // Trim leading or trailing spaces or newlines
+        result = result.trimmingCharacters(in: .whitespaces)
+        
+        return result
+    }
+
+
     func fetchEventsByPerks() {
 
     }
