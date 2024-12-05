@@ -37,7 +37,7 @@ struct MapSection: View {
                 viewModel.fetchTodayEvents()
             }
             .mapStyle(.standard)
-            .frame(height: 400)
+            .frame(height: 410)
             .colorScheme(.dark)
 
           
