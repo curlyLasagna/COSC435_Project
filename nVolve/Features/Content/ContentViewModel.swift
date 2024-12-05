@@ -29,8 +29,6 @@ class ContentViewModel: ObservableObject {
 
         let endpoint = "https://involved.towson.edu/api/discovery/event/search?startsAfter=\(encodedStart)&endsBefore=\(encodedEnd)"
 
-        print("ContentViewModel: Fetching events from endpoint: \(endpoint)")
-
         AF.request(endpoint).responseDecodable(of: InvolvedEvents.self) { response in
             switch response.result {
             case .success(let data):
