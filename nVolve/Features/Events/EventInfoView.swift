@@ -106,6 +106,7 @@ struct EventInfo: View {
                     Spacer() // Allows scrolling content to push up
                 }
                 .padding()
+                .padding(.bottom, 80)
             }
 
             // Fixed bottom action buttons
