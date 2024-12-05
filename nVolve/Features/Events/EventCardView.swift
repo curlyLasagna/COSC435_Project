@@ -8,12 +8,13 @@
 import SwiftUI
 
 struct EventCard: View {
-    let event: InvolvedEvent?
+    let event: InvolvedEvent
     let date: String
     let imagePath: String?
     var viewModel: ContentViewModel = ContentViewModel()
-    var strippedEventDescription: String { return viewModel.stripHTML(text: event?.eventDescription) }
+    var strippedEventDescription: String { return viewModel.stripHTML(text: event.eventDescription) }
     @State var showEvent: Bool = false
+    @EnvironmentObject var favoritesViewModel: FavoritesViewModel
 
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
@@ -33,14 +34,14 @@ struct EventCard: View {
                     ProgressView("Loading...")
                 }
             }
-            
+
             VStack(alignment: .leading, spacing: 3) {
-                Text(event?.eventName ?? "Event")
+                Text(event.eventName ?? "Event")
                     .font(.headline)
                     .fontWeight(.semibold)
                     .lineLimit(1)
 
-                Text("\(date) / \(event?.eventLocation ?? "Room")")
+                Text("\(date) / \(event.eventLocation ?? "Room")")
                     .font(.caption)
                     .bold()
 
@@ -58,6 +59,21 @@ struct EventCard: View {
         .background(Color.white)
         .cornerRadius(12)
         .overlay(
+            // Display heart icon if favorited
+            VStack {
+                HStack {
+                    Spacer()
+                    if favoritesViewModel.isFavorited(event: event) {
+                        Image(systemName: "heart.fill")
+                            .font(.system(size: 20))
+                            .foregroundColor(.red)
+                            .padding(8)
+                    }
+                }
+                Spacer()
+            }
+        )
+        .overlay(
             RoundedRectangle(cornerRadius: 12)
                 .stroke(Color.yellow, lineWidth: 1)
         )
@@ -69,13 +85,14 @@ struct EventCard: View {
             EventInfo(
                 showEvent: $showEvent,
                 imagePath: imagePath,
-                title: event?.eventName ?? "Event Title",
+                title: event.eventName ?? "Event Title",
                 time: date,
-                room: event?.eventLocation ?? "Room 204",
+                room: event.eventLocation ?? "Room 204",
                 description: strippedEventDescription,
-                eventLat: event?.latitude ?? "0.0",
-                eventLng: event?.longitude ?? "0.0",
-                perks: event?.perks ?? []
+                eventLat: event.latitude ?? "0.0",
+                eventLng: event.longitude ?? "0.0",
+                perks: event.perks ?? [],
+                eventID: event.id
             )
         }
     }

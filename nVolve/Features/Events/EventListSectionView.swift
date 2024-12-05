@@ -8,8 +8,24 @@
 import SwiftUI
 
 struct EventListSection: View {
-    var viewModel: ContentViewModel
-    @State private var showEvent = false
+    @ObservedObject var viewModel: ContentViewModel
+    @EnvironmentObject var favoritesViewModel: FavoritesViewModel
+
+    var sortedEvents: [InvolvedEvent] {
+        var events = viewModel.events
+        events.sort { (event1, event2) -> Bool in
+            let isFav1 = favoritesViewModel.isFavorited(event: event1)
+            let isFav2 = favoritesViewModel.isFavorited(event: event2)
+            if isFav1 != isFav2 {
+                return isFav1 && !isFav2
+            } else {
+                let date1 = event1.startDateParsed ?? Date()
+                let date2 = event2.startDateParsed ?? Date()
+                return date1 < date2
+            }
+        }
+        return events
+    }
 
     var body: some View {
         ScrollView(
@@ -20,23 +36,13 @@ struct EventListSection: View {
                 spacing: 10
             ) {
                 ForEach(
-                    viewModel.events.indices,
+                    sortedEvents.indices,
                     id: \.self
                 ) { index in
                     EventCard(
-                        event:
-                            viewModel
-                            .events[index],
-                        date:
-                            viewModel
-                            .getStartTime(
-                                dateAsString: viewModel.events[index].startDate
-                            ),
-                        imagePath:
-                            viewModel
-                            .getImages(
-                                imgPath: viewModel.events[index].imagePath
-                            )
+                        event: sortedEvents[index],
+                        date: viewModel.getStartTime(dateAsString: sortedEvents[index].startDate),
+                        imagePath: viewModel.getImages(imgPath: sortedEvents[index].imagePath)
                     )
                 }
             }
