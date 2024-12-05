@@ -17,20 +17,25 @@ struct ContentView: View {
         ZStack {
             VStack(spacing: 0) {
                 // App Header
-                HStack {
-                    Spacer()
+                ZStack {
+                    // Centered Logo
                     Image("tu-involved")
                         .resizable()
                         .scaledToFit()
-                        .frame(width: 100, height: 40)
+                        .frame(width: 150, height: 60)
                         .onTapGesture {
                             position = .automatic
                         }
-                    Spacer()
-                }
 
-                // Filter Header Section
-                FilterHeader(showingFilters: $showingFilters)
+                    // Right-Aligned Filter Header
+                    HStack {
+                        Spacer()
+                        FilterHeader(showingFilters: $showingFilters)
+                    }
+                }
+                .padding(.bottom)
+
+
 
                 // Map Section
                 MapSection(
