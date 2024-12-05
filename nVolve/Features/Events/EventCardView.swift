@@ -98,15 +98,3 @@ struct EventCard: View {
     }
 }
 
-struct EventCard_Previews: PreviewProvider {
-    static var previews: some View {
-        EventCard(
-            event: nil,
-            date: "10:00 AM",
-            imagePath: "https://via.placeholder.com/300",
-            showEvent: false
-        )
-        .previewLayout(.sizeThatFits)
-        .padding()
-    }
-}
