@@ -19,83 +19,115 @@ struct EventInfo: View {
 
     var eventLat: String
     var eventLng: String
-
     var perks: [String]
     var eventID: String?
     @EnvironmentObject var favoritesViewModel: FavoritesViewModel
 
     var body: some View {
-        VStack(alignment: .leading) {
-            // Header with Close Button
-            HStack {
-                Text(title)
-                    .font(.system(size: 30))
-                    .padding(.leading)
-                Spacer()
-                Image(systemName: "x.circle")
-                    .font(.system(size: 30))
-                    .foregroundColor(.red)
-                    .padding(.trailing)
-                    .onTapGesture {
-                        showEvent = false
+        ZStack {
+            // Scrollable content
+            ScrollView {
+                VStack(alignment: .leading, spacing: 16) {
+                    // Header with title and close button
+                    HStack {
+                        Text(title)
+                            .font(.system(size: 28, weight: .bold))
+                            .lineLimit(2)
+                            .padding(.leading)
+
+                        Spacer()
+
+                        Image(systemName: "xmark.circle.fill")
+                            .font(.system(size: 28))
+                            .foregroundColor(.red)
+                            .onTapGesture {
+                                showEvent = false
+                            }
+                            .padding(.trailing)
                     }
-            }
-            .padding(.top)
+                    .padding(.top, 10)
 
-            // Event Image
-            if let imagePath = imagePath, let url = URL(string: imagePath) {
-                AsyncImage(url: url) { image in
-                    image
-                        .resizable()
-                        .scaledToFit()
-                } placeholder: {
-                    ProgressView()
+                    // Event image
+                    if let imagePath = imagePath, let url = URL(string: imagePath) {
+                        AsyncImage(url: url) { image in
+                            image
+                                .resizable()
+                                .scaledToFit()
+                                .frame(maxHeight: 200)
+                                .cornerRadius(12)
+                                .shadow(radius: 5)
+                        } placeholder: {
+                            ProgressView()
+                                .frame(maxHeight: 200)
+                        }
+                    }
+
+                    // Event details
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("Time: \(time)")
+                            .font(.title3)
+                            .fontWeight(.semibold)
+
+                        Text("Location: \(room)")
+                            .font(.title3)
+                            .fontWeight(.semibold)
+
+                        Text(description)
+                            .font(.body)
+                            .foregroundColor(.secondary)
+                            .padding(.top)
+                    }
+
+                    // Perks section
+                    if !perks.isEmpty {
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text("Perks")
+                                .font(.headline)
+
+                            ForEach(perks, id: \.self) { perk in
+                                HStack {
+                                    Image(systemName: "checkmark.circle.fill")
+                                        .foregroundColor(.green)
+                                    Text(perk)
+                                        .font(.body)
+                                }
+                            }
+                        }
+                        .padding(.top)
+                    }
+
+                    Spacer() // Allows scrolling content to push up
                 }
+                .padding()
             }
 
-            // Event Details
-            Text("Time: \(time)")
-                .font(.title2)
-            Text(room)
-                .font(.title2)
-            Text(description)
-                .padding(.top)
-
-            Spacer()
-
-            // Perks
-            if !perks.isEmpty {
-                Text("Perks:")
-                    .font(.headline)
-                    .padding(.top)
-                ForEach(perks, id: \.self) { perk in
-                    Text("- \(perk)")
-                        .padding(.leading)
-                }
-            }
-
-            // Action Buttons
-            HStack {
+            // Fixed bottom action buttons
+            VStack {
                 Spacer()
-                // Get Directions Button
-                Button(action: {
-                    openMapApp(latitude: eventLat, longitude: eventLng)
-                    showEvent = false
-                }) {
-                    Text("Get Directions")
+                HStack(spacing: 16) {
+                    Spacer()
+
+                    // Get Directions Button
+                    Button(action: {
+                        openMapApp(latitude: eventLat, longitude: eventLng)
+                        showEvent = false
+                    }) {
+                        HStack {
+                            Image(systemName: "map.fill")
+                            Text("Get Directions")
+                        }
                         .font(.headline)
                         .foregroundColor(.white)
                         .padding()
-                        .frame(width: 200)
+                        .frame(maxWidth: 275)
+                        .frame(height: 65)
                         .background(Color.blue)
                         .cornerRadius(10)
-                }
-                // Favorite Button
-                Image(systemName: favorited ? "heart.fill" : "heart")
-                    .font(.system(size: 30))
-                    .foregroundColor(.red)
-                    .padding()
-                    .onTapGesture {
+                    }
+                    .padding(.bottom, 10)
+
+                    // Favorite Button
+                    Button(action: {
                         favorited.toggle()
                         if let id = eventID, let event = favoritesViewModel.findEventByID(id: id) {
                             if favorited {
@@ -105,15 +137,37 @@ struct EventInfo: View {
                             }
                             showEvent = false
                         }
+                    }) {
+                        Image(systemName: favorited ? "heart.fill" : "heart")
+                            .font(.system(size: 36))
+                            .foregroundColor(favorited ? .red : .gray)
                     }
-                Spacer()
+                    .padding(.bottom, 10)
+
+                    Spacer()
+                }
+                .padding(.horizontal)
+                .padding(.bottom, 20)
+                .background(Color(UIColor.systemBackground).opacity(0.95))
             }
         }
-        .padding()
+        .background(Color(UIColor.systemBackground))
+        .edgesIgnoringSafeArea(.bottom)
         .onAppear {
             if let id = eventID, let event = favoritesViewModel.findEventByID(id: id) {
                 favorited = favoritesViewModel.isFavorited(event: event)
             }
+        }
+    }
+
+    // Helper function to open maps
+    private func openMapApp(latitude: String, longitude: String) {
+        if let lat = Double(latitude), let lng = Double(longitude) {
+            let coordinate = CLLocationCoordinate2D(latitude: lat, longitude: lng)
+            let placemark = MKPlacemark(coordinate: coordinate)
+            let mapItem = MKMapItem(placemark: placemark)
+            mapItem.name = title
+            mapItem.openInMaps()
         }
     }
 }
