@@ -96,7 +96,7 @@ struct EventInfo: View {
                         .padding(.top)
                     }
 
-                    Spacer() // Allows scrolling content to push up
+                    Spacer()
                 }
                 .padding()
             }
