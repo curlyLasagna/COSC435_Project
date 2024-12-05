@@ -17,7 +17,7 @@ struct EventCard: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
-            // Event Image
+            // Event Image or Placeholder
             if let imagePath = imagePath, let url = URL(string: imagePath) {
                 AsyncImage(url: url) { image in
                     image
@@ -27,15 +27,10 @@ struct EventCard: View {
                         .clipped()
                         .cornerRadius(8)
                 } placeholder: {
-                    RoundedRectangle(cornerRadius: 8)
-                        .fill(Color.gray.opacity(0.3))
-                        .frame(height: 120)
-                        .overlay(
-                            ProgressView()
-                                .scaleEffect(0.8)
-                                .padding()
-                        )
+                    placeholderImage
                 }
+            } else {
+                placeholderImage
             }
 
             // Event Details
@@ -95,6 +90,24 @@ struct EventCard: View {
         .padding(.vertical, 10)
     }
 }
+
+private var placeholderImage: some View {
+        RoundedRectangle(cornerRadius: 8)
+            .fill(Color.gray.opacity(0.3))
+            .frame(height: 120)
+            .overlay(
+                VStack {
+                    Image(systemName: "photo")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 40, height: 40)
+                        .foregroundColor(.gray)
+                    Text("No Image Available")
+                        .font(.caption)
+                        .foregroundColor(.gray)
+                }
+            )
+    }
 
 struct EventCard_Previews: PreviewProvider {
     static var previews: some View {
