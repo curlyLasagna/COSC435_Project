@@ -14,6 +14,7 @@ struct EventCard: View {
     var viewModel: ContentViewModel = ContentViewModel()
     var strippedEventDescription: String { return viewModel.stripHTML(text: event.eventDescription) }
     @State var showEvent: Bool = false
+    @EnvironmentObject var favoritesViewModel: FavoritesViewModel
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
@@ -42,7 +43,8 @@ struct EventCard: View {
 
                 HStack {
                     Image(systemName: "clock.fill")
-                        .foregroundColor(Color(red: 1.0, green: 0.733, blue: 0.0))
+                        .foregroundColor(
+                            Color(red: 1.0, green: 0.733, blue: 0.0))
                     Text(date)
                         .font(.caption)
                         .foregroundColor(.black)
@@ -62,14 +64,28 @@ struct EventCard: View {
         }
         .frame(width: 200, height: 220)
         .background(
-                    RoundedRectangle(cornerRadius: 12)
-                        .fill(Color.white)
-                        .shadow(color: Color.gray.opacity(0.2), radius: 4, x: 0, y: 2)
-                )
-                .overlay(
-                    RoundedRectangle(cornerRadius: 12)
-                        .stroke(Color.black, lineWidth: 2)
-                )
+            RoundedRectangle(cornerRadius: 12)
+                .fill(Color.white)
+                .shadow(color: Color.gray.opacity(0.2), radius: 4, x: 0, y: 2)
+        )
+        .overlay(
+            VStack {
+                HStack {
+                    Spacer()
+                    if favoritesViewModel.isFavorited(event: event) {
+                        Image(systemName: "heart.fill")
+                            .font(.system(size: 20))
+                            .foregroundColor(.red)
+                            .padding(8)
+                    }
+                }
+                Spacer()
+            }
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: 12)
+                .stroke(Color.black, lineWidth: 2)
+        )
         .onTapGesture {
             showEvent = true
         }
