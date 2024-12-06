@@ -8,13 +8,11 @@
 import SwiftUI
 
 struct EventCard: View {
-    let event: InvolvedEvent
+    let event: EventModel
     let date: String
     let imagePath: String?
     var viewModel: ContentViewModel = ContentViewModel()
-    var strippedEventDescription: String {
-        return viewModel.stripHTML(text: event.eventDescription)
-    }
+    var strippedEventDescription: String { return viewModel.stripHTML(text: event.eventDescription) }
     @State var showEvent: Bool = false
     @EnvironmentObject var favoritesViewModel: FavoritesViewModel
 
@@ -38,7 +36,7 @@ struct EventCard: View {
 
             // Event Details
             VStack(alignment: .leading, spacing: 4) {
-                Text(event.eventName ?? "Event")
+                Text(event.eventName)
                     .font(.headline)
                     .fontWeight(.bold)
                     .lineLimit(1)
@@ -55,9 +53,8 @@ struct EventCard: View {
 
                 HStack {
                     Image(systemName: "mappin.and.ellipse")
-                        .foregroundColor(
-                            Color(red: 1.0, green: 0.733, blue: 0.0))
-                    Text(event.eventLocation ?? "Location")
+                        .foregroundColor(Color(red: 1.0, green: 0.733, blue: 0.0))
+                    Text(event.eventLocation)
                         .font(.caption)
                         .foregroundColor(.black)
                         .lineLimit(1)
@@ -96,14 +93,13 @@ struct EventCard: View {
             EventInfo(
                 showEvent: $showEvent,
                 imagePath: imagePath,
-                title: event.eventName ?? "Event Title",
+                title: event.eventName,
                 time: date,
-                room: event.eventLocation ?? "Room 204",
+                room: event.eventLocation,
                 description: strippedEventDescription,
-                eventLat: event.latitude ?? "0.0",
-                eventLng: event.longitude ?? "0.0",
-                perks: event.perks ?? [],
-                eventID: event.id
+                eventLat: event.lat,
+                eventLng: event.long,
+                perks: event.perks
             )
         }
         .padding(.trailing, 5)
@@ -112,19 +108,19 @@ struct EventCard: View {
 }
 
 private var placeholderImage: some View {
-    RoundedRectangle(cornerRadius: 8)
-        .fill(Color.gray.opacity(0.3))
-        .frame(height: 120)
-        .overlay(
-            VStack {
-                Image(systemName: "photo")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 40, height: 40)
-                    .foregroundColor(.gray)
-                Text("No Image Available")
-                    .font(.caption)
-                    .foregroundColor(.gray)
-            }
-        )
-}
+        RoundedRectangle(cornerRadius: 8)
+            .fill(Color.gray.opacity(0.3))
+            .frame(height: 120)
+            .overlay(
+                VStack {
+                    Image(systemName: "photo")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 40, height: 40)
+                        .foregroundColor(.gray)
+                    Text("No Image Available")
+                        .font(.caption)
+                        .foregroundColor(.gray)
+                }
+            )
+    }

@@ -8,8 +8,8 @@
 import SwiftUI
 
 class FavoritesViewModel: ObservableObject {
-    @Published var favoriteEvents: [InvolvedEvent] = []
-    var allEvents: [InvolvedEvent] = [] {
+    @Published var favoriteEvents: [EventModel] = []
+    var allEvents: [EventModel] = [] {
         didSet {
             // Rebuild favoriteEvents whenever allEvents changes
             rebuildFavorites()
@@ -23,38 +23,28 @@ class FavoritesViewModel: ObservableObject {
         checkForReset()
     }
 
-    func addFavorite(event: InvolvedEvent) {
-        guard let eid = event.id else {
-            print("FavoritesViewModel: This event has no id, cannot favorite.")
-            return
-        }
+    func addFavorite(event: EventModel) {
         guard !isFavorited(event: event) else {
-            print("FavoritesViewModel: Event \(eid) is already favorited.")
+            print("FavoritesViewModel: Event \(event.id) is already favorited.")
             return
         }
 
-        favoriteEventIDs.append(eid)
+        favoriteEventIDs.append(event.id)
         rebuildFavorites()
         saveFavoriteEventIDs()
     }
 
-    func removeFavorite(event: InvolvedEvent) {
-        guard let eid = event.id else {
-            print("FavoritesViewModel: This event has no id, cannot unfavorite.")
-            return
-        }
-
-        favoriteEventIDs.removeAll { $0 == eid }
+    func removeFavorite(event: EventModel) {
+        favoriteEventIDs.removeAll { $0 == event.id }
         rebuildFavorites()
         saveFavoriteEventIDs()
     }
 
-    func isFavorited(event: InvolvedEvent) -> Bool {
-        guard let eid = event.id else { return false }
-        return favoriteEventIDs.contains(eid)
+    func isFavorited(event: EventModel) -> Bool {
+        return favoriteEventIDs.contains(event.id)
     }
 
-    func findEventByID(id: String?) -> InvolvedEvent? {
+    func findEventByID(id: String?) -> EventModel? {
         guard let id = id else {
             print("FavoritesViewModel: findEventByID called with nil id.")
             return nil
@@ -70,8 +60,8 @@ class FavoritesViewModel: ObservableObject {
     }
 
     private func sortFavoritesByTime() {
-        favoriteEvents.sort { (a: InvolvedEvent, b: InvolvedEvent) -> Bool in
-            (a.startDate ?? "") < (b.startDate ?? "")
+        favoriteEvents.sort { (a: EventModel, b: EventModel) -> Bool in
+            (a.time) < (b.time)
         }
     }
 

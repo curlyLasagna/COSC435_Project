@@ -13,27 +13,13 @@ import SwiftUI
     var position: MapCameraPosition = .automatic
     var showEventInfo: Bool = false
     var showingFilters: Bool = false
-    var events: [InvolvedEvent] = []
-
+    var events: [EventModel] = []
+    var dataService = DataService()
+    
     func fetchTodayEvents() {
-        // This function is only for involved @ TU. A refactor will be required to accodomate other data sources
-        let encodedStart = ISO8601DateFormatter().string(from: Date())
-            .addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)
-
-        let encodedEnd = ISO8601DateFormatter().string(
-            from: Date().advanced(by: 86400)
-        ).addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)
-
-        let endpoint =
-            "https://involved.towson.edu/api/discovery/event/search? startsAfter=\(encodedStart!)endsBefore=\(encodedEnd!)"
-        AF.request(endpoint).responseDecodable(of: InvolvedEvents.self) {
-            response in
-            switch response.result {
-            case .success(let data):
-                self.events = data.value
-            case .failure(let err):
-                print(err)
-            }
+        Task {
+            await dataService.fetchInvolved()
+            self.events = dataService.events
         }
     }
 
@@ -51,14 +37,6 @@ import SwiftUI
             latitude: 39.394839, longitude: -76.610880)
     }
 
-    func getImages(imgPath: String?) -> String {
-        // To get the full image path, prepend the returned image path with https://se-images.campuslabs.com/clink/images/
-        if let fullImgPath = imgPath {
-            return "https://se-images.campuslabs.com/clink/images/"
-                + fullImgPath
-        }
-        return ""
-    }
 
     func getStartTime(dateAsString: String?) -> String {
         let isoFormatter = ISO8601DateFormatter()
