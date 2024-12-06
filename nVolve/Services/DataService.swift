@@ -10,7 +10,7 @@ import SwiftUI
 @Observable class DataService {
 
     var events: [EventModel] = []
-    
+
     func fetchInvolved() async {
         // This function is only for involved @ TU. A refactor will be required to accodomate other data sources
         let encodedStart = ISO8601DateFormatter().string(from: Date())
@@ -19,7 +19,7 @@ import SwiftUI
         let encodedEnd = ISO8601DateFormatter().string(
             from: Date().advanced(by: 86400)
         ).addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)
-        
+
         let endpoint =
             "https://involved.towson.edu/api/discovery/event/search? startsAfter=\(encodedStart!)endsBefore=\(encodedEnd!)"
         await withCheckedContinuation { continuation in
@@ -27,7 +27,8 @@ import SwiftUI
                 response in
                 switch response.result {
                 case .success(let data):
-                    self.events.append(contentsOf: data.value.compactMap { $0.toEventModel() })
+                    self.events.append(
+                        contentsOf: data.value.compactMap { $0.toEventModel() })
                 case .failure(let err):
                     print(err)
                 }
@@ -36,33 +37,19 @@ import SwiftUI
         }
     }
 
-    private func fetchEvents() {
-        // WIP for another PR
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd"
-        let eventDate = dateFormatter.string(from: Date())
-        let endpoint = ""
-    }
 }
 
 extension InvolvedEvent {
     func toEventModel() -> EventModel? {
         guard
             let id = id,
-                let name = eventName,
-              let description = eventDescription,
-              let location = eventLocation,
-              let time = startDate,
-              let lat = latitude,
-              let long = longitude else {
+            let name = eventName,
+            let description = eventDescription,
+            let location = eventLocation
+        else {
             return nil
         }
-        
-//        let dateFormatter = ISO8601DateFormatter()
-//        guard let startDate = dateFormatter.date(from: startDateString) else {
-//            return nil
-//        }
-        
+
         return EventModel(
             id: id,
             eventName: name,
@@ -71,9 +58,10 @@ extension InvolvedEvent {
             eventImage: imagePath ?? "",
             theme: [eventTheme ?? ""],
             perks: perks ?? [],
-            lat: lat,
-            long: long,
-            time: startDate!
+            // Glen woods because idk where else to default
+            lat: latitude ?? "39.3924982",
+            long: longitude ?? "-76.6083555",
+            time: startDate ?? "12:00"
         )
     }
 }
