@@ -1,3 +1,10 @@
+//
+//  EventInfo.swift
+//  nVolve
+//
+//  Created by Rasheed Nolley on 11/11/24.
+//
+
 import SwiftUI
 import MapKit
 
@@ -8,27 +15,13 @@ struct EventInfo: View {
     var time: String
     var room: String
     var description: String
-    @State private var favorited: Bool // This state tracks whether the event is favorited
+    @State private var favorited = false
 
-    // Placeholder data
     var eventLat: String
     var eventLng: String
     var perks: [String]
-
-    init(showEvent: Binding<Bool>, imagePath: String?, title: String, time: String, room: String, description: String, eventLat: String, eventLng: String, perks: [String]) {
-        self._showEvent = showEvent
-        self.imagePath = imagePath
-        self.title = title
-        self.time = time
-        self.room = room
-        self.description = description
-        self.eventLat = eventLat
-        self.eventLng = eventLng
-        self.perks = perks
-
-        // Retrieve the favorited state from UserDefaults or set to false if not saved
-        self._favorited = State(initialValue: UserDefaults.standard.bool(forKey: "favorited_\(title)"))
-    }
+    var eventID: String?
+    @EnvironmentObject var favoritesViewModel: FavoritesViewModel
 
     var body: some View {
         ZStack {
@@ -103,7 +96,7 @@ struct EventInfo: View {
                         .padding(.top)
                     }
 
-                    Spacer() // Allows scrolling content to push up
+                    Spacer()
                 }
                 .padding()
                 .padding(.bottom, 80)
@@ -127,7 +120,7 @@ struct EventInfo: View {
                         .font(.headline)
                         .foregroundColor(.white)
                         .padding()
-                        .frame(maxWidth: 275) // Adjusted width
+                        .frame(maxWidth: 275)
                         .frame(height: 65)
                         .background(Color.blue)
                         .cornerRadius(10)
@@ -136,9 +129,15 @@ struct EventInfo: View {
 
                     // Favorite Button
                     Button(action: {
-                        favorited.toggle() // This toggles the favorited state
-                        // Save the favorited state to UserDefaults
-                        UserDefaults.standard.set(favorited, forKey: "favorited_\(title)")
+                        favorited.toggle()
+                        if let id = eventID, let event = favoritesViewModel.findEventByID(id: id) {
+                            if favorited {
+                                favoritesViewModel.addFavorite(event: event)
+                            } else {
+                                favoritesViewModel.removeFavorite(event: event)
+                            }
+                            showEvent = false
+                        }
                     }) {
                         Image(systemName: favorited ? "heart.fill" : "heart")
                             .font(.system(size: 36))
@@ -149,15 +148,20 @@ struct EventInfo: View {
                     Spacer()
                 }
                 .padding(.horizontal)
-                .padding(.bottom, 20) // Safe area spacing for devices with no home button
-                .background(Color(UIColor.systemBackground).opacity(0.95)) // Background to distinguish buttons
+                .padding(.bottom, 20)
+                .background(Color(UIColor.systemBackground).opacity(0.95))
             }
         }
         .background(Color(UIColor.systemBackground))
         .edgesIgnoringSafeArea(.bottom)
+        .onAppear {
+            if let id = eventID, let event = favoritesViewModel.findEventByID(id: id) {
+                favorited = favoritesViewModel.isFavorited(event: event)
+            }
+        }
     }
 
-    // Open Map App Helper
+    // Helper function to open maps
     private func openMapApp(latitude: String, longitude: String) {
         if let lat = Double(latitude), let lng = Double(longitude) {
             let coordinate = CLLocationCoordinate2D(latitude: lat, longitude: lng)

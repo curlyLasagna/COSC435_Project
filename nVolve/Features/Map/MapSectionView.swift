@@ -34,7 +34,6 @@ struct MapSection: View {
             .onAppear {
                 manager.requestWhenInUseAuthorization()
                 manager.startUpdatingLocation()
-                viewModel.fetchTodayEvents()
             }
             .mapStyle(.standard)
             .frame(height: 410)

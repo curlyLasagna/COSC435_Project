@@ -1,14 +1,17 @@
-// ContentView.swift
-// nVolve
 //
-// Created by Abdalla Abdelmagid on 11/10/24.
+//  ContentView.swift
+//  nVolve
+//
+//  Created by Abdalla Abdelmagid on 11/10/24.
+//
 
 import MapKit
 import SwiftUI
 
 struct ContentView: View {
+    @StateObject var favoritesViewModel = FavoritesViewModel()
+    @State var contentViewModel = ContentViewModel()
     @State private var position: MapCameraPosition = .automatic
-    private var contentViewModel = ContentViewModel()
     @StateObject private var viewModel = Markers()
     @StateObject private var filterViewModel = FilterViewModel()
     @State private var showingFilters = false
@@ -57,6 +60,13 @@ struct ContentView: View {
                     showingFilters: $showingFilters
                 )
             }
+        }
+        .environmentObject(favoritesViewModel)
+        .onChange(of: contentViewModel.events.map(\.id)) {
+            favoritesViewModel.allEvents = contentViewModel.events
+        }
+        .onAppear {
+            contentViewModel.fetchTodayEvents()
         }
     }
 }

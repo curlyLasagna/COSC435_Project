@@ -62,6 +62,16 @@ import SwiftUI
 }
 
 extension InvolvedEvent {
+    
+    func getImages(_ imgPath: String?) -> String {
+        // To get the full image path, prepend the returned image path with https://se-images.campuslabs.com/clink/images/
+        if let fullImgPath = imgPath {
+            return "https://se-images.campuslabs.com/clink/images/"
+                + fullImgPath
+        }
+        return ""
+    }
+    
     func toEventModel() -> EventModel? {
         // Discard events that have nil values for these attributes
         guard
@@ -74,12 +84,13 @@ extension InvolvedEvent {
             return nil
         }
 
+
         return EventModel(
             id: id,
             eventName: name,
             eventDescription: description,
             eventLocation: location,
-            eventImage: imagePath ?? "",
+            eventImage: getImages(imagePath),
             theme: [eventTheme ?? ""],
             perks: perks ?? [],
             lat: latitude ?? "39.3924982",
