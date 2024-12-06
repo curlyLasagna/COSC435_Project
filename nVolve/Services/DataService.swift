@@ -40,6 +40,16 @@ import SwiftUI
 }
 
 extension InvolvedEvent {
+    
+    func getImages(_ imgPath: String?) -> String {
+        // To get the full image path, prepend the returned image path with https://se-images.campuslabs.com/clink/images/
+        if let fullImgPath = imgPath {
+            return "https://se-images.campuslabs.com/clink/images/"
+                + fullImgPath
+        }
+        return ""
+    }
+    
     func toEventModel() -> EventModel? {
         guard
             let id = id,
@@ -55,7 +65,7 @@ extension InvolvedEvent {
             eventName: name,
             eventDescription: description,
             eventLocation: location,
-            eventImage: imagePath ?? "",
+            eventImage: getImages(imagePath),
             theme: [eventTheme ?? ""],
             perks: perks ?? [],
             // Glen woods because idk where else to default

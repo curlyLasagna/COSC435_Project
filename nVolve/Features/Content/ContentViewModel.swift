@@ -37,14 +37,6 @@ import SwiftUI
             latitude: 39.394839, longitude: -76.610880)
     }
 
-    func getImages(imgPath: String?) -> String {
-        // To get the full image path, prepend the returned image path with https://se-images.campuslabs.com/clink/images/
-        if let fullImgPath = imgPath {
-            return "https://se-images.campuslabs.com/clink/images/"
-                + fullImgPath
-        }
-        return ""
-    }
 
     func getStartTime(dateAsString: String?) -> String {
         let isoFormatter = ISO8601DateFormatter()
