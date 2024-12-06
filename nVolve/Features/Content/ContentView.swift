@@ -9,11 +9,12 @@ import MapKit
 import SwiftUI
 
 struct ContentView: View {
-    @StateObject var favoritesViewModel = FavoritesViewModel()
     @State var contentViewModel = ContentViewModel()
     @State private var position: MapCameraPosition = .automatic
     @StateObject private var viewModel = Markers()
     @StateObject private var filterViewModel = FilterViewModel()
+    @StateObject var favoritesViewModel = FavoritesViewModel()
+    @StateObject private var notificationsViewModel = NotificationsViewModel()
     @State private var showingFilters = false
 
     var body: some View {
@@ -67,6 +68,7 @@ struct ContentView: View {
         }
         .onAppear {
             contentViewModel.fetchTodayEvents()
+            notificationsViewModel.checkForPerimssion()
         }
     }
 }
