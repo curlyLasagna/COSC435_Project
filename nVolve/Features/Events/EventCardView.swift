@@ -8,11 +8,11 @@
 import SwiftUI
 
 struct EventCard: View {
-    let event: EventModel?
+    let event: EventModel
     let date: String
     let imagePath: String?
     var viewModel: ContentViewModel = ContentViewModel()
-    var strippedEventDescription: String { return viewModel.stripHTML(text: event?.eventDescription) }
+    var strippedEventDescription: String { return viewModel.stripHTML(text: event.eventDescription) }
     @State var showEvent: Bool = false
 
     var body: some View {
@@ -35,7 +35,7 @@ struct EventCard: View {
 
             // Event Details
             VStack(alignment: .leading, spacing: 4) {
-                Text(event?.eventName ?? "Event")
+                Text(event.eventName)
                     .font(.headline)
                     .fontWeight(.bold)
                     .lineLimit(1)
@@ -52,7 +52,7 @@ struct EventCard: View {
                 HStack {
                     Image(systemName: "mappin.and.ellipse")
                         .foregroundColor(Color(red: 1.0, green: 0.733, blue: 0.0))
-                    Text(event?.eventLocation ?? "Location")
+                    Text(event.eventLocation)
                         .font(.caption)
                         .foregroundColor(.black)
                         .lineLimit(1)
@@ -77,13 +77,13 @@ struct EventCard: View {
             EventInfo(
                 showEvent: $showEvent,
                 imagePath: imagePath,
-                title: event?.eventName ?? "Event Title",
+                title: event.eventName,
                 time: date,
-                room: event?.eventLocation ?? "Room",
+                room: event.eventLocation,
                 description: strippedEventDescription,
-                eventLat: event?.lat ?? "0.0",
-                eventLng: event?.long ?? "0.0",
-                perks: event?.perks ?? []
+                eventLat: event.lat,
+                eventLng: event.long,
+                perks: event.perks
             )
         }
         .padding(.trailing, 5)
@@ -108,16 +108,3 @@ private var placeholderImage: some View {
                 }
             )
     }
-
-struct EventCard_Previews: PreviewProvider {
-    static var previews: some View {
-        EventCard(
-            event: nil,
-            date: "10:00 AM",
-            imagePath: "https://via.placeholder.com/300",
-            showEvent: false
-        )
-        .previewLayout(.sizeThatFits)
-        .padding()
-    }
-}
