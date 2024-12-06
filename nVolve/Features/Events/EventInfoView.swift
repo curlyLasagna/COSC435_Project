@@ -99,6 +99,7 @@ struct EventInfo: View {
                     Spacer()
                 }
                 .padding()
+                .padding(.bottom, 80)
             }
 
             // Fixed bottom action buttons

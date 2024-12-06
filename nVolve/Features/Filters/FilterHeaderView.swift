@@ -12,26 +12,15 @@ struct FilterHeader: View {
 
     var body: some View {
         HStack {
-            Text(
-                "Filters"
-            )
             Spacer()
             Button(
                 action: {
                     showingFilters.toggle()
                 }) {
-                    Image(
-                        systemName: "slider.horizontal.3"
-                    )
+                    Image(systemName: "slider.horizontal.3")
+                        .font(.system(size: 24)) // Increase icon size
                 }
         }
         .padding()
-        .overlay(
-            Rectangle()
-                .stroke(
-                    Color.black,
-                    lineWidth: 1
-                )
-        )
     }
 }
