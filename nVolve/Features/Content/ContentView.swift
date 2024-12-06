@@ -62,8 +62,8 @@ struct ContentView: View {
             }
         }
         .environmentObject(favoritesViewModel)
-        .onChange(of: contentViewModel.events) { oldEvents, newEvents in
-                    favoritesViewModel.allEvents = newEvents
+        .onChange(of: contentViewModel.events.map(\.id)) {
+            favoritesViewModel.allEvents = contentViewModel.events
         }
         .onAppear {
             contentViewModel.fetchTodayEvents()

@@ -8,36 +8,50 @@
 import SwiftUI
 
 class FavoritesViewModel: ObservableObject {
-    @Published var favoriteEvents: [InvolvedEvent] = [] {
+    @Published var favoriteEvents: [InvolvedEvent] = []
+    var allEvents: [InvolvedEvent] = [] {
         didSet {
-            saveFavorites()
+            // Rebuild favoriteEvents whenever allEvents changes
+            rebuildFavorites()
         }
     }
 
-    // Reference to all events
-    var allEvents: [InvolvedEvent] = []
+    private var favoriteEventIDs: [String] = []
 
     init() {
-        loadFavorites()
+        loadFavoriteEventIDs()
         checkForReset()
     }
 
     func addFavorite(event: InvolvedEvent) {
-        guard !isFavorited(event: event) else {
-            print("FavoritesViewModel: Event \(event.id) is already favorited.")
+        guard let eid = event.id else {
+            print("FavoritesViewModel: This event has no id, cannot favorite.")
             return
         }
-        favoriteEvents.append(event)
-        sortFavoritesByTime()
+        guard !isFavorited(event: event) else {
+            print("FavoritesViewModel: Event \(eid) is already favorited.")
+            return
+        }
+
+        favoriteEventIDs.append(eid)
+        rebuildFavorites()
+        saveFavoriteEventIDs()
     }
 
     func removeFavorite(event: InvolvedEvent) {
-        favoriteEvents.removeAll { $0.id == event.id }
+        guard let eid = event.id else {
+            print("FavoritesViewModel: This event has no id, cannot unfavorite.")
+            return
+        }
+
+        favoriteEventIDs.removeAll { $0 == eid }
+        rebuildFavorites()
+        saveFavoriteEventIDs()
     }
 
     func isFavorited(event: InvolvedEvent) -> Bool {
-        let isFav = favoriteEvents.contains { $0.id == event.id }
-        return isFav
+        guard let eid = event.id else { return false }
+        return favoriteEventIDs.contains(eid)
     }
 
     func findEventByID(id: String?) -> InvolvedEvent? {
@@ -45,36 +59,46 @@ class FavoritesViewModel: ObservableObject {
             print("FavoritesViewModel: findEventByID called with nil id.")
             return nil
         }
-        let event = allEvents.first { $0.id == id }
-        return event
+        return allEvents.first { $0.id == id }
+    }
+
+    private func rebuildFavorites() {
+        favoriteEvents = favoriteEventIDs.compactMap { eid in
+            allEvents.first { $0.id == eid }
+        }
+        sortFavoritesByTime()
     }
 
     private func sortFavoritesByTime() {
-        favoriteEvents.sort { ($0.startDateParsed ?? Date()) < ($1.startDateParsed ?? Date()) }
-    }
-
-    // MARK: - Persistence Methods
-
-    private func saveFavorites() {
-        if let data = try? JSONEncoder().encode(favoriteEvents) {
-            UserDefaults.standard.set(data, forKey: "favoriteEvents")
+        favoriteEvents.sort { (a: InvolvedEvent, b: InvolvedEvent) -> Bool in
+            (a.startDate ?? "") < (b.startDate ?? "")
         }
     }
 
-    private func loadFavorites() {
-        if let data = UserDefaults.standard.data(forKey: "favoriteEvents"),
-           let events = try? JSONDecoder().decode([InvolvedEvent].self, from: data) {
-            favoriteEvents = events
+    // MARK: - Persistence Methods (storing only IDs)
+    private func saveFavoriteEventIDs() {
+        if let data = try? JSONEncoder().encode(favoriteEventIDs) {
+            UserDefaults.standard.set(data, forKey: "favoriteEventIDs")
+        }
+    }
+
+    private func loadFavoriteEventIDs() {
+        if let data = UserDefaults.standard.data(forKey: "favoriteEventIDs"),
+           let ids = try? JSONDecoder().decode([String].self, from: data) {
+            favoriteEventIDs = ids
+        } else {
+            favoriteEventIDs = []
         }
     }
 
     // MARK: - Reset at Midnight
-
     private func checkForReset() {
         let lastResetDate = UserDefaults.standard.object(forKey: "lastResetDate") as? Date ?? Date()
         if !Calendar.current.isDateInToday(lastResetDate) {
+            favoriteEventIDs = []
             favoriteEvents = []
             UserDefaults.standard.set(Date(), forKey: "lastResetDate")
+            saveFavoriteEventIDs()
         }
     }
 }

@@ -13,14 +13,14 @@ struct EventListSection: View {
 
     var sortedEvents: [InvolvedEvent] {
         var events = viewModel.events
-        events.sort { (event1, event2) -> Bool in
+        events.sort { (event1: InvolvedEvent, event2: InvolvedEvent) -> Bool in
             let isFav1 = favoritesViewModel.isFavorited(event: event1)
             let isFav2 = favoritesViewModel.isFavorited(event: event2)
             if isFav1 != isFav2 {
                 return isFav1 && !isFav2
             } else {
-                let date1 = event1.startDateParsed ?? Date()
-                let date2 = event2.startDateParsed ?? Date()
+                let date1 = event1.startDate ?? ""
+                let date2 = event2.startDate ?? ""
                 return date1 < date2
             }
         }
@@ -28,17 +28,9 @@ struct EventListSection: View {
     }
 
     var body: some View {
-        ScrollView(
-            .horizontal,
-            showsIndicators: true
-        ) {
-            HStack(
-                spacing: 10
-            ) {
-                ForEach(
-                    sortedEvents.indices,
-                    id: \.self
-                ) { index in
+        ScrollView(.horizontal, showsIndicators: true) {
+            HStack(spacing: 10) {
+                ForEach(sortedEvents.indices, id: \.self) { index in
                     EventCard(
                         event: sortedEvents[index],
                         date: viewModel.getStartTime(dateAsString: sortedEvents[index].startDate),
@@ -46,12 +38,8 @@ struct EventListSection: View {
                     )
                 }
             }
-            .padding(
-                .horizontal
-            )
+            .padding(.horizontal)
         }
-        .background(
-            Color.white
-        )
+        .background(Color.white)
     }
 }

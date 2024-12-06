@@ -5,10 +5,10 @@
 //  Created by Luis on 11/12/24.
 //
 
-import SwiftUI
+import SwiftUICore
 
-struct InvolvedEvent: Decodable, Encodable, Identifiable, Equatable {
-    let id: String
+struct InvolvedEvent: Decodable, Identifiable {
+    let id: String?
     let orgName: String?
     let orgPhoto: String?
     let eventName: String?
@@ -21,7 +21,7 @@ struct InvolvedEvent: Decodable, Encodable, Identifiable, Equatable {
     let latitude: String?
     let longitude: String?
     let perks: [String]?
-
+    
     enum CodingKeys: String, CodingKey {
         case id
         case orgName = "organizationName"
@@ -39,14 +39,9 @@ struct InvolvedEvent: Decodable, Encodable, Identifiable, Equatable {
     }
 }
 
-struct InvolvedEvents: Decodable, Encodable {
+struct InvolvedEvents: Decodable {
     let value: [InvolvedEvent]
-}
-
-extension InvolvedEvent {
-    var startDateParsed: Date? {
-        guard let startDate = startDate else { return nil }
-        let formatter = ISO8601DateFormatter()
-        return formatter.date(from: startDate)
+    enum MyCodingKeys: String, CodingKey {
+        case value
     }
 }
