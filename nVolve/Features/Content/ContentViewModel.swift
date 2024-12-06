@@ -21,7 +21,6 @@ import SwiftUI
             await dataService.fetchInvolved()
             await dataService.fetchTUEvents()
             self.events = dataService.events
-            print(self.events)
         }
     }
 
