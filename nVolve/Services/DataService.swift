@@ -37,28 +37,27 @@ import SwiftUI
         }
     }
 
-    private func fetchEvents() async {
+    func fetchTUEvents() async {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd"
         let eventDate = dateFormatter.string(from: Date())
-        let endpoint = "https://events.towson.edu/api/2/events/?start=\(eventDate)&end\(eventDate)"
-        
+        let endpoint =
+            "https://events.towson.edu/api/2/events/?start=\(eventDate)"
+
         await withCheckedContinuation { continuation in
-            AF.request(endpoint).responseDecodable(of: EventsTUEvent.self) {
+            AF.request(endpoint).responseDecodable(of: EventsTUEvents.self) {
                 response in
                 switch response.result {
                 case .success(let data):
-                    print(data)
-//                    self.events.append(
-//                        contentsOf: data.value.compactMap() { $0.toEventModel()}
-//                    )
+                    self.events.append(
+                        contentsOf: data.events.compactMap { $0.event.toEventModel() })
                 case .failure(let err):
                     print(err)
                 }
                 continuation.resume()
             }
         }
-        
+
     }
 }
 
@@ -74,11 +73,6 @@ extension InvolvedEvent {
         else {
             return nil
         }
-
-        //        let dateFormatter = ISO8601DateFormatter()
-        //        guard let startDate = dateFormatter.date(from: startDateString) else {
-        //            return nil
-        //        }
 
         return EventModel(
             id: id,
@@ -102,12 +96,21 @@ extension EventsTUEvent {
             let name = title,
             let description = description,
             let location = locationName,
-            let time = time,
-            let lat = latitude,
-            let long = longitude else {
+            let time = eventInstances?.first?.eventInstance?.start
+        else {
             return nil
         }
-        
-        return EventModel(id: id, eventName: name, eventDescription: description, eventLocation: location, eventImage: <#T##String#>, theme: <#T##[String]#>, perks: <#T##[String]#>, lat: <#T##String#>, long: <#T##String#>, time: <#T##String#>)
+
+        return EventModel(
+            id: String(id),
+            eventName: name,
+            eventDescription: description,
+            eventLocation: location,
+            eventImage: imagePath ?? "",
+            theme: [""],
+            perks: customFields?.foodServed == "Yes" ? ["Free Food"] : [],
+            lat: geo?.latitude ?? "39.3924982",
+            long: geo?.longitude ?? "-76.6083555",
+            time: time)
     }
 }

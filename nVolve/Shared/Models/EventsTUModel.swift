@@ -6,35 +6,76 @@
 //
 
 struct EventsTUEvent: Decodable, Identifiable {
-    let id: String?
+    let id: Int?
     let title: String?
     let roomNum: String?
     let locationName: String?
     let description: String?
     let address: String?
     let imagePath: String?
-    let latitude: String?
-    let longitude: String?
-    let free_food: String?
-    let time: String?
+    let geo: Geo?
+    let eventInstances: [EventInstanceElement]?
+    let customFields: CustomFields?
 
     enum CodingKeys: String, CodingKey {
         case id
-        case title = "title"
+        case title
         case roomNum = "room_number"
         case locationName = "location"
         case description = "description_text"
-        case address = "address"
+        case address
         case imagePath = "photo_url"
-        case latitude = "geo.latitude"
-        case longitude = "geo.longitude"
-        case free_food = "custom_fields.food_served"
-        case time = "event.event_instances[0].event_instance.start"
+        case eventInstances = "event_instances"
+        case geo
+        case customFields = "custom_fields"
+    }
+}
+
+// Dealing nested JSON in Swift had me feeling like: https://media.tenor.com/diOUKyT0TxQAAAAi/xd.gif
+struct EventElement: Decodable {
+    let event: EventsTUEvent
+}
+
+struct EventInstanceEventInstance: Decodable {
+    let id: Int?
+    let start: String?
+
+    enum CodingKeys: String, CodingKey {
+        case id = "id"
+        case start = "start"
+    }
+}
+
+struct CustomFields: Codable {
+    let foodServed: String?
+    let eventImageAltTextField: String?
+
+    enum CodingKeys: String, CodingKey {
+        case foodServed = "food_served"
+        case eventImageAltTextField = "event_image_alt_text_field"
+    }
+}
+
+struct Geo: Decodable {
+    let latitude: String?
+    let longitude: String?
+
+    enum CodingKeys: String, CodingKey {
+        case latitude = "latitude"
+        case longitude = "longitude"
+    }
+}
+
+struct EventInstanceElement: Decodable {
+    let eventInstance: EventInstanceEventInstance?
+
+    enum CodingKeys: String, CodingKey {
+        case eventInstance = "event_instance"
     }
 }
 
 struct EventsTUEvents: Decodable {
-    let events: [EventsTUEvent]
+    let events: [EventElement]
     enum MyCodingKeys: String, CodingKey {
         case events
     }
