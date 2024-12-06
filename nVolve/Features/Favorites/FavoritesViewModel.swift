@@ -25,11 +25,9 @@ class FavoritesViewModel: ObservableObject {
 
     func addFavorite(event: InvolvedEvent) {
         guard let eid = event.id else {
-            print("FavoritesViewModel: This event has no id, cannot favorite.")
             return
         }
         guard !isFavorited(event: event) else {
-            print("FavoritesViewModel: Event \(eid) is already favorited.")
             return
         }
 
@@ -40,7 +38,6 @@ class FavoritesViewModel: ObservableObject {
 
     func removeFavorite(event: InvolvedEvent) {
         guard let eid = event.id else {
-            print("FavoritesViewModel: This event has no id, cannot unfavorite.")
             return
         }
 
@@ -56,7 +53,6 @@ class FavoritesViewModel: ObservableObject {
 
     func findEventByID(id: String?) -> InvolvedEvent? {
         guard let id = id else {
-            print("FavoritesViewModel: findEventByID called with nil id.")
             return nil
         }
         return allEvents.first { $0.id == id }
@@ -84,7 +80,8 @@ class FavoritesViewModel: ObservableObject {
 
     private func loadFavoriteEventIDs() {
         if let data = UserDefaults.standard.data(forKey: "favoriteEventIDs"),
-           let ids = try? JSONDecoder().decode([String].self, from: data) {
+            let ids = try? JSONDecoder().decode([String].self, from: data)
+        {
             favoriteEventIDs = ids
         } else {
             favoriteEventIDs = []
@@ -93,7 +90,9 @@ class FavoritesViewModel: ObservableObject {
 
     // MARK: - Reset at Midnight
     private func checkForReset() {
-        let lastResetDate = UserDefaults.standard.object(forKey: "lastResetDate") as? Date ?? Date()
+        let lastResetDate =
+            UserDefaults.standard.object(forKey: "lastResetDate") as? Date
+            ?? Date()
         if !Calendar.current.isDateInToday(lastResetDate) {
             favoriteEventIDs = []
             favoriteEvents = []
