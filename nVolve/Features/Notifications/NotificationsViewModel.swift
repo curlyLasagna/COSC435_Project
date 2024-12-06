@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftUI
 import UserNotifications
 
 class NotificationsViewModel: NSObject, ObservableObject, UNUserNotificationCenterDelegate {
@@ -16,6 +17,12 @@ class NotificationsViewModel: NSObject, ObservableObject, UNUserNotificationCent
      * NOTE: This only sends a local push notification. It does not do remote push notifications or interact with Apple Push Notification Service because we don't have an Apple Developer account.
      *
      */
+    
+    @EnvironmentObject var favoritesViewModel: FavoritesViewModel
+
+    var favorites: [InvolvedEvent] {
+        favoritesViewModel.favoriteEvents
+    }
     
     func checkForPerimssion() {
         let notificatoinCenter = UNUserNotificationCenter.current()
