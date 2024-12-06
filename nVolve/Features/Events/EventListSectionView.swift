@@ -8,44 +8,38 @@
 import SwiftUI
 
 struct EventListSection: View {
-    var viewModel: ContentViewModel
-    @State private var showEvent = false
+    @State var viewModel: ContentViewModel
+    @EnvironmentObject var favoritesViewModel: FavoritesViewModel
+
+    var sortedEvents: [InvolvedEvent] {
+        var events = viewModel.events
+        events.sort { (event1: InvolvedEvent, event2: InvolvedEvent) -> Bool in
+            let isFav1 = favoritesViewModel.isFavorited(event: event1)
+            let isFav2 = favoritesViewModel.isFavorited(event: event2)
+            if isFav1 != isFav2 {
+                return isFav1 && !isFav2
+            } else {
+                let date1 = event1.startDate ?? ""
+                let date2 = event2.startDate ?? ""
+                return date1 < date2
+            }
+        }
+        return events
+    }
 
     var body: some View {
-        ScrollView(
-            .horizontal,
-            showsIndicators: true
-        ) {
-            HStack(
-                spacing: 10
-            ) {
-                ForEach(
-                    viewModel.events.indices,
-                    id: \.self
-                ) { index in
+        ScrollView(.horizontal, showsIndicators: true) {
+            HStack(spacing: 10) {
+                ForEach(sortedEvents.indices, id: \.self) { index in
                     EventCard(
-                        event:
-                            viewModel
-                            .events[index],
-                        date:
-                            viewModel
-                            .getStartTime(
-                                dateAsString: viewModel.events[index].startDate
-                            ),
-                        imagePath:
-                            viewModel
-                            .getImages(
-                                imgPath: viewModel.events[index].imagePath
-                            )
+                        event: sortedEvents[index],
+                        date: viewModel.getStartTime(dateAsString: sortedEvents[index].startDate),
+                        imagePath: viewModel.getImages(imgPath: sortedEvents[index].imagePath)
                     )
                 }
             }
-            .padding(
-                .horizontal
-            )
+            .padding(.horizontal)
         }
-        .background(
-            Color.white
-        )
+        .background(Color.white)
     }
 }
