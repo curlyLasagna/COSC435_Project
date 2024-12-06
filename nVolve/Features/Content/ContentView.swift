@@ -10,7 +10,7 @@ import SwiftUI
 
 struct ContentView: View {
     @StateObject var favoritesViewModel = FavoritesViewModel()
-    @ObservedObject var contentViewModel = ContentViewModel()
+    @State var contentViewModel = ContentViewModel()
     @State private var position: MapCameraPosition = .automatic
     @StateObject private var viewModel = Markers()
     @StateObject private var filterViewModel = FilterViewModel()
@@ -57,8 +57,8 @@ struct ContentView: View {
             }
         }
         .environmentObject(favoritesViewModel)
-        .onReceive(contentViewModel.$events) { events in
-            favoritesViewModel.allEvents = events
+        .onChange(of: contentViewModel.events) { oldEvents, newEvents in
+                    favoritesViewModel.allEvents = newEvents
         }
         .onAppear {
             contentViewModel.fetchTodayEvents()

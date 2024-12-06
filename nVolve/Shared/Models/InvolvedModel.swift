@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct InvolvedEvent: Codable, Identifiable, Equatable {
+struct InvolvedEvent: Decodable, Encodable, Identifiable, Equatable {
     let id: String
     let orgName: String?
     let orgPhoto: String?
@@ -39,7 +39,7 @@ struct InvolvedEvent: Codable, Identifiable, Equatable {
     }
 }
 
-struct InvolvedEvents: Codable {
+struct InvolvedEvents: Decodable, Encodable {
     let value: [InvolvedEvent]
 }
 

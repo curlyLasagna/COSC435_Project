@@ -9,11 +9,11 @@ import Alamofire
 import MapKit
 import SwiftUI
 
-class ContentViewModel: ObservableObject {
-    @Published var position: MapCameraPosition = .automatic
-    @Published var showEventInfo: Bool = false
-    @Published var showingFilters: Bool = false
-    @Published var events: [InvolvedEvent] = []
+@Observable class ContentViewModel{
+    var position: MapCameraPosition = .automatic
+    var showEventInfo: Bool = false
+    var showingFilters: Bool = false
+    var events: [InvolvedEvent] = []
 
     func fetchTodayEvents() {
         // This function is only for involved @ TU. A refactor will be required to accodomate other data sources

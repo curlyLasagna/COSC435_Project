@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct EventListSection: View {
-    @ObservedObject var viewModel: ContentViewModel
+    @State var viewModel: ContentViewModel
     @EnvironmentObject var favoritesViewModel: FavoritesViewModel
 
     var sortedEvents: [InvolvedEvent] {
