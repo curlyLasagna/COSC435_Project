@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct EventCard: View {
-    let event: InvolvedEvent?
+    let event: EventModel?
     let date: String
     let imagePath: String?
     var viewModel: ContentViewModel = ContentViewModel()
@@ -81,8 +81,8 @@ struct EventCard: View {
                 time: date,
                 room: event?.eventLocation ?? "Room",
                 description: strippedEventDescription,
-                eventLat: event?.latitude ?? "0.0",
-                eventLng: event?.longitude ?? "0.0",
+                eventLat: event?.lat ?? "0.0",
+                eventLng: event?.long ?? "0.0",
                 perks: event?.perks ?? []
             )
         }

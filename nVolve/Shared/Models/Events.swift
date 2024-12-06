@@ -1,13 +1,14 @@
 import SwiftUICore
 
-struct EventModel {
+struct EventModel: Identifiable {
+    let id: String
     let eventName: String
     let eventDescription: String
     let eventLocation: String
     let eventImage: String
     let theme: [String]
     let perks: [String]
-    let lat: Double
-    let long: Double
-    let time: Date
+    let lat: String
+    let long: String
+    let time: String
 }
