@@ -25,6 +25,7 @@ struct EventCard: View {
                         .resizable()
                         .scaledToFill()
                         .frame(height: 120)
+                        .frame(width: 200)
                         .clipped()
                         .cornerRadius(8)
                 } placeholder: {
