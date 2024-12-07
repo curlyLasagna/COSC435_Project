@@ -13,7 +13,7 @@ import CoreLocationUI
 
 struct MapSection: View {
     @State private var position: MapCameraPosition = .automatic
-    var viewModel: ContentViewModel
+    var viewModel: ContentViewModel = ContentViewModel()
     var markers: Markers
     @State private var reset: Bool = false
     let manager = CLLocationManager()
@@ -34,7 +34,6 @@ struct MapSection: View {
             .onAppear {
                 manager.requestWhenInUseAuthorization()
                 manager.startUpdatingLocation()
-                viewModel.fetchTodayEvents()
             }
             .mapStyle(.standard)
             .frame(height: 410)
