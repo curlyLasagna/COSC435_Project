@@ -10,73 +10,99 @@ import SwiftUI
 import UserNotifications
 
 class NotificationsViewModel: NSObject, ObservableObject, UNUserNotificationCenterDelegate {
-    /**
-     * Procedure:
-     * Get favorites
-     * For each favorites, send a notification for each favorited event 1hr, 30m, 15m, and 5m away from it
-     * NOTE: This only sends a local push notification. It does not do remote push notifications or interact with Apple Push Notification Service because we don't have an Apple Developer account.
-     *
-     */
-    
-    @EnvironmentObject var favoritesViewModel: FavoritesViewModel
+    var favoritesViewModel: FavoritesViewModel
 
-    var favorites: [InvolvedEvent] {
-        favoritesViewModel.favoriteEvents
+    var favorites: [EventModel] {
+        return favoritesViewModel.favoriteEvents
     }
-    
+
+    init(favoritesViewModel: FavoritesViewModel) {
+        self.favoritesViewModel = favoritesViewModel
+        super.init()
+    }
+
     func checkForPerimssion() {
-        let notificatoinCenter = UNUserNotificationCenter.current()
-        notificatoinCenter.getNotificationSettings { settings in
+        let notificationCenter = UNUserNotificationCenter.current()
+        notificationCenter.getNotificationSettings { settings in
             switch settings.authorizationStatus {
             case .authorized:
-                print("Success")
-                self.dispatchNotification()
-                
+                self.scheduleNotificationsForFavorites()
             case .denied:
-                print("Error")
                 return
             case .notDetermined:
-                print("In Progress")
-                notificatoinCenter.requestAuthorization(options: [.alert]) { success, _ in
-                    if success {
-                        print("Success")
-                        self.dispatchNotification()
+                notificationCenter.requestAuthorization(options: [.alert, .sound, .badge]) { success, error in
+                    if success && error == nil {
+                        self.scheduleNotificationsForFavorites()
+                    } else {
                     }
                 }
             default:
                 return
             }
-        
         }
-        
     }
-    
-    // This only dispatches it when the app isn't open
-    func dispatchNotification() {
-        let identifier = "my-morning-notification"
-        let title = "Time to party 🎉"
-        let body = "💃🕺💃🕺💃🕺"
-        let hour = 15 // Adjust this to test
-        let minute = 38 // Adjust this to test
-        
-        let isDaily = true
-        
+
+    func scheduleNotificationsForFavorites() {
+        UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
+
+        let intervals: [TimeInterval] = [3600, 1800, 900, 300] // 1hr, 30m, 15m, 5m
+
+        for event in favorites {
+            guard let eventDate = parseEventTime(event.time) else {
+                continue
+            }
+
+            for interval in intervals {
+                let notificationDate = eventDate.addingTimeInterval(-interval)
+                if notificationDate > Date() {
+                    scheduleNotification(for: event, at: notificationDate)
+                } else {
+                    print("Skipping notification for \(event.id) at \(notificationDate) since it has passed")
+                }
+            }
+        }
+    }
+
+    private func scheduleNotification(for event: EventModel, at date: Date) {
         let notificationCenter = UNUserNotificationCenter.current()
         let content = UNMutableNotificationContent()
-        content.title = title
-        content.body = body
+        content.title = "Upcoming Event: \(event.eventName)"
+
+        if let eventDate = parseEventTime(event.time) {
+            let formatter = DateFormatter()
+            formatter.dateFormat = "h:mma"
+            let formattedTime = formatter.string(from: eventDate).lowercased()
+            content.body = "Happening at \(formattedTime) in \(event.eventLocation)."
+        } else {
+            content.body = "Happening soon in \(event.eventLocation)."
+        }
+
         content.sound = .default
         
         let calendar = Calendar.current
-        var dateComponents = DateComponents(calendar: calendar, timeZone: TimeZone.current)
-        dateComponents.hour = hour
-        dateComponents.minute = minute
+        let dateComponents = calendar.dateComponents([.hour, .minute], from: date)
         
-        let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: isDaily)
+        let identifier = "event-\(event.id)-\(date.timeIntervalSince1970)"
+
+        let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: false)
         let request = UNNotificationRequest(identifier: identifier, content: content, trigger: trigger)
         
-        notificationCenter.removePendingNotificationRequests(withIdentifiers: [identifier]) // Removes all pending notification
-        notificationCenter.add(request) // Adds it to the queue
-        
+        notificationCenter.add(request) { error in
+            if let error = error {
+                print("NotificationsViewModel: Error scheduling notification for \(event.id) - \(error.localizedDescription)")
+            } else {
+                print("NotificationsViewModel: Scheduled notification for \(event.id) at \(dateComponents.hour ?? 0):\(dateComponents.minute ?? 0)")
+            }
+        }
+    }
+
+
+    private func parseEventTime(_ timeString: String) -> Date? {
+        let isoFormatter = ISO8601DateFormatter()
+        if let date = isoFormatter.date(from: timeString) {
+            return date
+        }
+
+        return nil
     }
 }

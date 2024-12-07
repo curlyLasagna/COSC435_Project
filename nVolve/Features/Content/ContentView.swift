@@ -13,9 +13,17 @@ struct ContentView: View {
     @State private var position: MapCameraPosition = .automatic
     @StateObject private var viewModel = Markers()
     @StateObject private var filterViewModel = FilterViewModel()
-    @StateObject var favoritesViewModel = FavoritesViewModel()
-    @StateObject private var notificationsViewModel = NotificationsViewModel()
+    
     @State private var showingFilters = false
+    
+    @StateObject var favoritesViewModel = FavoritesViewModel()
+    @StateObject var notificationsViewModel: NotificationsViewModel
+
+    init() {
+        let fvm = FavoritesViewModel()
+        _favoritesViewModel = StateObject(wrappedValue: fvm)
+        _notificationsViewModel = StateObject(wrappedValue: NotificationsViewModel(favoritesViewModel: fvm))
+    }
 
     var body: some View {
         ZStack {

@@ -8,47 +8,52 @@
 import SwiftUI
 
 class FavoritesViewModel: ObservableObject {
-    @Published var favoriteEvents: [EventModel] = []
+    @Published var favoriteEvents: [EventModel] = [] {
+        didSet {
+            notificationsViewModel?.scheduleNotificationsForFavorites()
+        }
+    }
     var allEvents: [EventModel] = [] {
         didSet {
-            // Rebuild favoriteEvents whenever allEvents changes
             rebuildFavorites()
         }
     }
 
     private var favoriteEventIDs: [String] = []
+    var notificationsViewModel: NotificationsViewModel!
 
     init() {
         loadFavoriteEventIDs()
         checkForReset()
-    }
+        self.notificationsViewModel = NotificationsViewModel(favoritesViewModel: self)
 
+    }
     func addFavorite(event: EventModel) {
         guard !isFavorited(event: event) else {
-            print("FavoritesViewModel: Event \(event.id) is already favorited.")
             return
         }
-
         favoriteEventIDs.append(event.id)
-        rebuildFavorites()
         saveFavoriteEventIDs()
+        rebuildFavorites()
     }
 
     func removeFavorite(event: EventModel) {
         favoriteEventIDs.removeAll { $0 == event.id }
-        rebuildFavorites()
         saveFavoriteEventIDs()
+        rebuildFavorites()
     }
 
     func isFavorited(event: EventModel) -> Bool {
-        return favoriteEventIDs.contains(event.id)
+        let result = favoriteEventIDs.contains(event.id)
+        return result
     }
 
     func findEventByID(id: String?) -> EventModel? {
         guard let id = id else {
             return nil
         }
-        return allEvents.first { $0.id == id }
+        let event = allEvents.first { $0.id == id }
+        return event
     }
 
     private func rebuildFavorites() {
@@ -64,7 +69,6 @@ class FavoritesViewModel: ObservableObject {
         }
     }
 
-    // MARK: - Persistence Methods (storing only IDs)
     private func saveFavoriteEventIDs() {
         if let data = try? JSONEncoder().encode(favoriteEventIDs) {
             UserDefaults.standard.set(data, forKey: "favoriteEventIDs")
@@ -81,7 +85,6 @@ class FavoritesViewModel: ObservableObject {
         }
     }
 
-    // MARK: - Reset at Midnight
     private func checkForReset() {
         let lastResetDate =
             UserDefaults.standard.object(forKey: "lastResetDate") as? Date
