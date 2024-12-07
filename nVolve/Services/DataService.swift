@@ -37,6 +37,28 @@ import SwiftUI
         }
     }
 
+    func fetchTUEvents() async {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        let eventDate = dateFormatter.string(from: Date())
+        let endpoint =
+            "https://events.towson.edu/api/2/events/?start=\(eventDate)"
+
+        await withCheckedContinuation { continuation in
+            AF.request(endpoint).responseDecodable(of: EventsTUEvents.self) {
+                response in
+                switch response.result {
+                case .success(let data):
+                    self.events.append(
+                        contentsOf: data.events.compactMap { $0.event.toEventModel() })
+                case .failure(let err):
+                    print(err)
+                }
+                continuation.resume()
+            }
+        }
+
+    }
 }
 
 extension InvolvedEvent {
@@ -51,14 +73,17 @@ extension InvolvedEvent {
     }
     
     func toEventModel() -> EventModel? {
+        // Discard events that have nil values for these attributes
         guard
             let id = id,
             let name = eventName,
             let description = eventDescription,
-            let location = eventLocation
+            let location = eventLocation,
+            let time = startDate
         else {
             return nil
         }
+
 
         return EventModel(
             id: id,
@@ -68,10 +93,35 @@ extension InvolvedEvent {
             eventImage: getImages(imagePath),
             theme: [eventTheme ?? ""],
             perks: perks ?? [],
-            // Glen woods because idk where else to default
             lat: latitude ?? "39.3924982",
             long: longitude ?? "-76.6083555",
-            time: startDate ?? "12:00"
+            time: time
         )
+    }
+}
+
+extension EventsTUEvent {
+    func toEventModel() -> EventModel? {
+        guard
+            let id = id,
+            let name = title,
+            let description = description,
+            let location = locationName,
+            let time = eventInstances?.first?.eventInstance?.start
+        else {
+            return nil
+        }
+
+        return EventModel(
+            id: String(id),
+            eventName: name,
+            eventDescription: description,
+            eventLocation: location,
+            eventImage: imagePath ?? "",
+            theme: [""],
+            perks: customFields?.foodServed == "Yes" ? ["Free Food"] : [],
+            lat: geo?.latitude ?? "39.3924982",
+            long: geo?.longitude ?? "-76.6083555",
+            time: time)
     }
 }
