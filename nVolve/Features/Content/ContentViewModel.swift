@@ -19,6 +19,7 @@ import SwiftUI
     func fetchTodayEvents() {
         Task {
             await dataService.fetchInvolved()
+            await dataService.fetchTUEvents()
             self.events = dataService.events
         }
     }

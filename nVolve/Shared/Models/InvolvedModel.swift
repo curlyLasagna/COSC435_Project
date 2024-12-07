@@ -5,8 +5,6 @@
 //  Created by Luis on 11/12/24.
 //
 
-import SwiftUICore
-
 struct InvolvedEvent: Decodable, Identifiable {
     let id: String?
     let orgName: String?
