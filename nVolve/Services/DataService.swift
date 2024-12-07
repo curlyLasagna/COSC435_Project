@@ -50,7 +50,9 @@ import SwiftUI
                 switch response.result {
                 case .success(let data):
                     self.events.append(
-                        contentsOf: data.events.compactMap { $0.event.toEventModel() })
+                        contentsOf: data.events.filter({
+                            $0.event.experience == "inperson"
+                        }).compactMap { $0.event.toEventModel() })
                 case .failure(let err):
                     print(err)
                 }
@@ -62,7 +64,7 @@ import SwiftUI
 }
 
 extension InvolvedEvent {
-    
+
     func getImages(_ imgPath: String?) -> String {
         // To get the full image path, prepend the returned image path with https://se-images.campuslabs.com/clink/images/
         if let fullImgPath = imgPath {
@@ -71,7 +73,7 @@ extension InvolvedEvent {
         }
         return ""
     }
-    
+
     func toEventModel() -> EventModel? {
         // Discard events that have nil values for these attributes
         guard
@@ -83,7 +85,6 @@ extension InvolvedEvent {
         else {
             return nil
         }
-
 
         return EventModel(
             id: id,
