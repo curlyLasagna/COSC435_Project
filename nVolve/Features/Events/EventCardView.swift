@@ -99,7 +99,8 @@ struct EventCard: View {
                 description: strippedEventDescription,
                 eventLat: event.lat,
                 eventLng: event.long,
-                perks: event.perks
+                perks: event.perks,
+                eventID: event.id
             )
         }
         .padding(.trailing, 5)
