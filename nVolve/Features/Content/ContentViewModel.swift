@@ -9,19 +9,43 @@ import Alamofire
 import MapKit
 import SwiftUI
 
-@Observable class ContentViewModel{
+@Observable class ContentViewModel {
     var position: MapCameraPosition = .automatic
     var showEventInfo: Bool = false
     var showingFilters: Bool = false
     var events: [EventModel] = []
     var dataService = DataService()
-    
+
     func fetchTodayEvents() {
         Task {
             await dataService.fetchInvolved()
             await dataService.fetchTUEvents()
             self.events = dataService.events
+            for e in self.events {
+                print(prettyPrint(event: e))
+            }
         }
+    }
+
+    func prettyPrint(event: EventModel) -> String {
+        let formattedThemes =
+        event.theme.isEmpty ? "None" : event.theme.joined(separator: ", ")
+        let formattedPerks =
+        event.perks.isEmpty ? "None" : event.perks.joined(separator: ", ")
+
+        return """
+            Event Details:
+            --------------
+            Name: \(event.eventName)
+            Description: \(event.eventDescription.replacingOccurrences(of: "<[^>]+>", with: "", options: .regularExpression, range: nil))
+            Location: \(event.eventLocation)
+            Image URL: \(event.eventImage)
+            Themes: \(formattedThemes)
+            Perks: \(formattedPerks)
+            Latitude: \(event.lat)
+            Longitude: \(event.long)
+            Time: \(event.time)
+            """
     }
 
     func getCoordinates(latitude: String?, longitude: String?)
@@ -37,7 +61,6 @@ import SwiftUI
         return CLLocationCoordinate2D(
             latitude: 39.394839, longitude: -76.610880)
     }
-
 
     func getStartTime(dateAsString: String?) -> String {
         let isoFormatter = ISO8601DateFormatter()
