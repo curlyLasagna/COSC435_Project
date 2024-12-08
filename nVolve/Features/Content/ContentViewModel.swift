@@ -26,13 +26,13 @@ import SwiftUI
             }
         }
     }
-    
 
+    // Debugging purposes
     func prettyPrint(event: EventModel) -> String {
         let formattedThemes =
-        event.theme.isEmpty ? "None" : event.theme.joined(separator: ", ")
+            event.theme.isEmpty ? "None" : event.theme.joined(separator: ", ")
         let formattedPerks =
-        event.perks.isEmpty ? "None" : event.perks.joined(separator: ", ")
+            event.perks.isEmpty ? "None" : event.perks.joined(separator: ", ")
 
         return """
             Event Details:
@@ -46,6 +46,7 @@ import SwiftUI
             Latitude: \(event.lat)
             Longitude: \(event.long)
             Time: \(event.time)
+            Building: \(event.building)
             """
     }
 
