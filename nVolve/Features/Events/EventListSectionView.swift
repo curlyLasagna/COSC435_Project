@@ -32,9 +32,7 @@ struct EventListSection: View {
             HStack(spacing: 10) {
                 ForEach(sortedEvents.indices, id: \.self) { index in
                     EventCard(
-                        event: sortedEvents[index],
-                        date: viewModel.getStartTime(dateAsString: sortedEvents[index].time),
-                        imagePath: sortedEvents[index].eventImage
+                        event: sortedEvents[index]
                     )
                 }
             }
