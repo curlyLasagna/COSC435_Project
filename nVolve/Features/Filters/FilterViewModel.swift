@@ -10,6 +10,11 @@ import SwiftUI
 class FilterViewModel: ObservableObject {
     @Published var selectedFilters: Set<String> = []
     @Published var showingFilters: Bool = false
+    var contentViewModel: ContentViewModel
+
+    init(contentViewModel: ContentViewModel) {
+        self.contentViewModel = contentViewModel
+    }
 
     let themeFilters = [
         "Arts & Music", "Athletics", "Cultural", "Community Service",
@@ -28,9 +33,31 @@ class FilterViewModel: ObservableObject {
 
     func clearFilters() {
         selectedFilters.removeAll()
+        contentViewModel.filteredEvents = contentViewModel.events // Reset filteredEvents
     }
 
     func applyFilters() {
-        // Add filter application logic here
+        let originalEvents = contentViewModel.events
+        contentViewModel.filteredEvents = originalEvents.filter { event in
+            // Apply the selected filters
+            var matches = false
+
+            // Match themes
+            if !selectedFilters.isDisjoint(with: event.theme) {
+                matches = true
+            }
+
+            // Match perks
+            if !selectedFilters.isDisjoint(with: event.perks) {
+                matches = true
+            }
+
+            // Match locations
+            if selectedFilters.contains(event.eventLocation) {
+                matches = true
+            }
+
+            return matches
+        }
     }
 }

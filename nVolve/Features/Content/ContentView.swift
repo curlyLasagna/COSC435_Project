@@ -13,8 +13,14 @@ struct ContentView: View {
     @State var contentViewModel = ContentViewModel()
     @State private var position: MapCameraPosition = .automatic
     @StateObject private var viewModel = Markers()
-    @StateObject private var filterViewModel = FilterViewModel()
+    @StateObject private var filterViewModel: FilterViewModel
     @State private var showingFilters = false
+    
+    init() {
+            let contentViewModel = ContentViewModel()
+            _contentViewModel = State(wrappedValue: contentViewModel)
+            _filterViewModel = StateObject(wrappedValue: FilterViewModel(contentViewModel: contentViewModel))
+        }
 
     var body: some View {
         ZStack {
