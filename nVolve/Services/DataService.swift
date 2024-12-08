@@ -180,14 +180,17 @@ extension InvolvedEvent {
         else {
             return nil
         }
-
+        
+        // I'm so over Swift 🫠
+        var categoriesAndThemes = categories
+        categoriesAndThemes?.append(eventTheme ?? "")
         return EventModel(
             id: id,
             eventName: name,
             eventDescription: stripHTML(text: description),
             eventLocation: location,
             eventImage: getImages(imagePath),
-            theme: [eventTheme ?? ""],
+            theme: categoriesAndThemes!,
             perks: perks ?? [],
             lat: latitude ?? "39.3924982",
             long: longitude ?? "-76.6083555",
