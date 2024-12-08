@@ -14,6 +14,7 @@ struct EventsTUEvent: Decodable, Identifiable {
     let address: String?
     let imagePath: String?
     let geo: Geo?
+    let experience: String?
     let eventInstances: [EventInstanceElement]?
     let customFields: CustomFields?
 
@@ -21,9 +22,10 @@ struct EventsTUEvent: Decodable, Identifiable {
         case id
         case title
         case roomNum = "room_number"
-        case locationName = "location"
+        case locationName = "location_name"
         case description = "description_text"
         case address
+        case experience
         case imagePath = "photo_url"
         case eventInstances = "event_instances"
         case geo
