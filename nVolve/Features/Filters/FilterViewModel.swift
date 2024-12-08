@@ -38,6 +38,13 @@ class FilterViewModel: ObservableObject {
 
     func applyFilters() {
         let originalEvents = contentViewModel.events
+        
+        // If no filters are selected, show all events
+        guard !selectedFilters.isEmpty else {
+            contentViewModel.filteredEvents = originalEvents
+            return
+        }
+        
         contentViewModel.filteredEvents = originalEvents.filter { event in
             // Apply the selected filters
             var matches = false
