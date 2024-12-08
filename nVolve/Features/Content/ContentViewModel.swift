@@ -26,6 +26,7 @@ import SwiftUI
             }
         }
     }
+    
 
     func prettyPrint(event: EventModel) -> String {
         let formattedThemes =
@@ -46,20 +47,6 @@ import SwiftUI
             Longitude: \(event.long)
             Time: \(event.time)
             """
-    }
-
-    func getCoordinates(latitude: String?, longitude: String?)
-        -> CLLocationCoordinate2D
-    {
-        if let latitude = Double(latitude ?? "39.394839"),
-            let longitude = Double(longitude ?? "-76.610880")
-        {
-            return CLLocationCoordinate2D(
-                latitude: latitude, longitude: longitude)
-        }
-        // Default to the Union
-        return CLLocationCoordinate2D(
-            latitude: 39.394839, longitude: -76.610880)
     }
 
     func getStartTime(dateAsString: String?) -> String {

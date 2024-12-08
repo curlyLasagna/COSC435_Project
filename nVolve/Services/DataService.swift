@@ -6,6 +6,7 @@
 //
 import Alamofire
 import SwiftUI
+import MapKit
 
 @Observable class DataService {
 
@@ -63,6 +64,38 @@ import SwiftUI
     }
 }
 
+func setBuildingByCoordinates(lat: Double, long: Double) -> String {
+    // How close a coordinate has to be
+    let threshold: Double = 500.0
+    
+    let buildingLocations: [String: CLLocation] = [
+        "Union": CLLocation(latitude: 39.39329226884807, longitude: -76.61096268644614),
+        "Liberal Arts": CLLocation(latitude: 39.39492842913834, longitude: -76.60932724025416),
+        "Burdick": CLLocation(latitude: 39.395271855922246, longitude: -76.61218288627627),
+        "York Road": CLLocation(latitude: 39.39069379520995, longitude: -76.60563329053981),
+        "Arts": CLLocation(latitude: 39.3913806226192, longitude: -76.61289412243788),
+        "Start": CLLocation(latitude: 39.3937, longitude: -76.6082),
+        "NewmanCenter": CLLocation(latitude: 39.39192875071915, longitude: -76.60394030346345),
+        "TuArena": CLLocation(latitude: 39.387711752091846, longitude: -76.61701109977116),
+        "TigerPlazza": CLLocation(latitude: 39.39506413482851, longitude: -76.61081088812264),
+        "Library": CLLocation(latitude: 39.39409061261545, longitude: -76.60649108812262),
+        "WestVillageDining": CLLocation(latitude: 39.39390693537731, longitude: -76.61816013552868),
+        "LectureHall": CLLocation(latitude: 39.394018, longitude: -76.608473),
+        "UnitedStadium": CLLocation(latitude: 39.388695, longitude: -76.616015),
+        "PsychBuilding": CLLocation(latitude: 39.394597029100346, longitude: -76.60900408836083)
+    ]
+    
+    for building in buildingLocations {
+        let distance = CLLocation(latitude: lat, longitude: long).distance(from: building.value)
+        if (distance <= threshold) {
+            return building.key
+        }
+    }
+    
+    return "Narnia"
+    
+}
+
 extension InvolvedEvent {
 
     func getImages(_ imgPath: String?) -> String {
@@ -85,6 +118,7 @@ extension InvolvedEvent {
         else {
             return nil
         }
+        
 
         return EventModel(
             id: id,
@@ -96,7 +130,8 @@ extension InvolvedEvent {
             perks: perks ?? [],
             lat: latitude ?? "39.3924982",
             long: longitude ?? "-76.6083555",
-            time: time
+            time: time,
+            building: setBuildingByCoordinates(Double(lat)!, Double(long)!),
         )
     }
 }
