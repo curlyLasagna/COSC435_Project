@@ -41,9 +41,9 @@ class FilterViewModel: ObservableObject {
         let originalEvents = contentViewModel.events
         
         guard !selectedFilters.isEmpty else {
-                contentViewModel.filteredEvents = originalEvents
-                return
-            }
+            contentViewModel.filteredEvents = originalEvents
+            return
+        }
         
         contentViewModel.filteredEvents = originalEvents.filter { event in
             // Apply the selected filters
@@ -70,14 +70,27 @@ class FilterViewModel: ObservableObject {
                     }
                 }
             }
+            
+            // Check if location matches (similar to how themes are checked)
+            for location in selectedFilters {
+                let eventLocationWords = event.eventLocation.lowercased().split(separator: " ")
+                let filterLocationWords = location.lowercased().split(separator: " ")
+                
+                // Check if any word from filterLocationWords exists in event's location
+                if eventLocationWords.contains(where: { filterLocationWords.contains($0) }) {
+                    matches = true
+                    break // If one match is found, we can stop further checking
+                }
+                
+                // Check if the filter and location are similar enough using Levenshtein distance
+                if areStringsSimilar(location.lowercased(), event.eventLocation.lowercased()) {
+                    matches = true
+                    break
+                }
+            }
 
             // Match perks
             if !selectedFilters.isDisjoint(with: event.perks) {
-                matches = true
-            }
-
-            // Match locations
-            if selectedFilters.contains(event.eventLocation) {
                 matches = true
             }
 
