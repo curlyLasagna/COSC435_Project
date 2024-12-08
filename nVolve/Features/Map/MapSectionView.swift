@@ -22,9 +22,8 @@ struct MapSection: View {
         ZStack(alignment: .topTrailing) {
             Map(position: $position) {
                 // Static Markers
-                ForEach(markers.markers, id: \.name) { marker in
-                    Marker(marker.name, systemImage: marker.image, coordinate: marker.coordinate)
-                        .tint(marker.color)
+                ForEach(viewModel.events) { event in
+                    Marker(event.eventName, coordinate: CLLocationCoordinate2D(latitude: Double(event.lat)!, longitude: Double(event.long)!))
                 }
                 UserAnnotation()
             }
