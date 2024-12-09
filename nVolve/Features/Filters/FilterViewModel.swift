@@ -13,9 +13,9 @@ class FilterViewModel: ObservableObject {
     @Published var showingFilters: Bool = false
     var contentViewModel: ContentViewModel
 
-        init(contentViewModel: ContentViewModel) {
-            self.contentViewModel = contentViewModel
-        }
+    init(contentViewModel: ContentViewModel) {
+        self.contentViewModel = contentViewModel
+    }
 
     let themeFilters = [
         "Arts & Music", "Athletics", "Cultural", "Community Service",
@@ -26,18 +26,18 @@ class FilterViewModel: ObservableObject {
     let perkFilters = ["Free Food", "Free Stuff"]
 
     let locationFilters = [
-        "Nearby", "Union", "Psychology Building", "Liberal Arts", "Arts",
-        "Newman Center", "TU Arena", "Tiger Plaza", "Library",
-        "West Village Dining", "Lecture Hall", "United Stadium",
-        "Burdick Field",
-    ]
+            "Union", "Psychology Building", "Liberal Arts", "Arts",
+            "Newman Center", "TU Arena", "Tiger Plaza", "Library",
+            "West Village Dining", "Lecture Hall", "United Stadium",
+            "Burdick Field",
+        ]
 
     func clearFilters() {
             selectedFilters.removeAll()
             contentViewModel.filteredEvents = contentViewModel.events // Reset filteredEvents
         }
 
-        func applyFilters() {
+    func applyFilters() {
             let originalEvents = contentViewModel.events
 
             guard !selectedFilters.isEmpty else {
@@ -97,8 +97,7 @@ class FilterViewModel: ObservableObject {
                 return matches
             }
         }
-
-
+    
         func areStringsSimilar(_ string1: String, _ string2: String, threshold: Int = 3) -> Bool {
             let distance = levenshteinDistance(string1.lowercased(), string2.lowercased())
                     return distance <= threshold
