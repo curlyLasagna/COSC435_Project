@@ -29,10 +29,14 @@ struct MapSection: View {
                                 latitude: Double(event.lat)!,
                                 longitude: Double(event.long)!)
                         ) {
-                            VStack {
-                                Image(systemName: "mappin.circle.fill")
+                            ZStack {
+                                Circle()
+                                    .frame(width:25 , height:25)
+                                Image("tu-logo")
+                                    .resizable()
+                                    .frame(width:22 , height:22)
                                     .font(.title)
-                                    .foregroundColor(.red)
+                                    .foregroundColor(.yellow)
                             }
                             .onTapGesture {
                                 selectedEvent = event
@@ -42,6 +46,9 @@ struct MapSection: View {
                     }
                 }
                 UserAnnotation()
+            }
+            .mapControls{
+                MapPitchToggle()
             }
             .onAppear {
                 manager.requestWhenInUseAuthorization()
