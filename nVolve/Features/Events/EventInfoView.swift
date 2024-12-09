@@ -56,7 +56,7 @@ struct EventInfo: View {
 
                     // Event details
                     VStack(alignment: .leading, spacing: 8) {
-                        Text("Time: \(event.time)")
+                        Text("Time: \(parseEventTime(event.time))")
                             .font(.title3)
                             .fontWeight(.semibold)
 
@@ -158,4 +158,18 @@ struct EventInfo: View {
             .presentationDetents([.medium, .large])
         }
     }
+}
+
+private func parseEventTime(_ timeString: String) -> String {
+    let isoFormatter = ISO8601DateFormatter()
+    let dateFormatter = DateFormatter()
+    dateFormatter.dateFormat = "h:mm a"
+    dateFormatter.amSymbol = "am"
+    dateFormatter.pmSymbol = "pm"
+
+    if let date = isoFormatter.date(from: timeString) {
+        return dateFormatter.string(from: date)
+    }
+
+    return "Invalid Time"
 }
