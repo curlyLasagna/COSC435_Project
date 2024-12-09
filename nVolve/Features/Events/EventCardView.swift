@@ -42,7 +42,7 @@ struct EventCard: View {
                     Image(systemName: "clock.fill")
                         .foregroundColor(
                             Color(red: 1.0, green: 0.733, blue: 0.0))
-                    Text(event.time)
+                    Text(parseEventTime(event.time))
                         .font(.caption)
                         .foregroundColor(.black)
                         .lineLimit(1)
@@ -114,3 +114,17 @@ private var placeholderImage: some View {
                 }
             )
     }
+
+private func parseEventTime(_ timeString: String) -> String {
+    let isoFormatter = ISO8601DateFormatter()
+    let dateFormatter = DateFormatter()
+    dateFormatter.dateFormat = "h:mm a"
+    dateFormatter.amSymbol = "am"
+    dateFormatter.pmSymbol = "pm"
+
+    if let date = isoFormatter.date(from: timeString) {
+        return dateFormatter.string(from: date)
+    }
+
+    return "Invalid Time"
+}
