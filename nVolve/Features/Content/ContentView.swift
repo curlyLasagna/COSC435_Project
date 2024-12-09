@@ -9,11 +9,20 @@ import MapKit
 import SwiftUI
 
 struct ContentView: View {
-    @StateObject var favoritesViewModel = FavoritesViewModel()
     @State var contentViewModel = ContentViewModel()
     @State private var position: MapCameraPosition = .automatic
     @StateObject private var filterViewModel = FilterViewModel()
+    
     @State private var showingFilters = false
+    
+    @StateObject var favoritesViewModel = FavoritesViewModel()
+    @StateObject var notificationsViewModel: NotificationsViewModel
+
+    init() {
+        let fvm = FavoritesViewModel()
+        _favoritesViewModel = StateObject(wrappedValue: fvm)
+        _notificationsViewModel = StateObject(wrappedValue: NotificationsViewModel(favoritesViewModel: fvm))
+    }
 
     var body: some View {
         ZStack {
@@ -63,6 +72,7 @@ struct ContentView: View {
         }
         .onAppear {
             contentViewModel.fetchTodayEvents()
+            notificationsViewModel.checkForPerimssion()
         }
     }
 }
