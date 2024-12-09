@@ -194,7 +194,7 @@ extension InvolvedEvent {
             perks: perks ?? [],
             lat: latitude ?? "39.3924982",
             long: longitude ?? "-76.6083555",
-            time: getStartTime(dateAsString: time),
+            time: time,
             building: setBuildingByCoordinates(
                 lat: Double(latitude ?? "39.3924982")!,
                 long: Double(longitude ?? "-76.6083555")!)
@@ -224,7 +224,7 @@ extension EventsTUEvent {
             perks: customFields?.foodServed == "Yes" ? ["Free Food"] : [],
             lat: geo?.latitude ?? "39.3924982",
             long: geo?.longitude ?? "-76.6083555",
-            time: getStartTime(dateAsString: time) ,
+            time: time,
             // 🤮
             building: setBuildingByCoordinates(
                 lat: Double(geo?.latitude ?? "39.3924982")!,
