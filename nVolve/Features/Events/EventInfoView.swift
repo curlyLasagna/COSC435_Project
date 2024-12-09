@@ -13,6 +13,7 @@ struct EventInfo: View {
     let event: EventModel
     @State private var favorited = false
     @EnvironmentObject var favoritesViewModel: FavoritesViewModel
+    @State private var showBottomSheet = false
 
     var body: some View {
         ZStack {
@@ -101,8 +102,7 @@ struct EventInfo: View {
 
                     // Get Directions Button
                     Button(action: {
-                        openMapApp(latitude: event.lat, longitude: event.long)
-                        showEvent = false
+                        showBottomSheet = true
                     }) {
                         HStack {
                             Image(systemName: "map.fill")
@@ -148,16 +148,14 @@ struct EventInfo: View {
                 favorited = favoritesViewModel.isFavorited(event: event)
             }
         }
-    }
-
-    // Helper function to open maps
-    private func openMapApp(latitude: String, longitude: String) {
-        if let lat = Double(latitude), let lng = Double(longitude) {
-            let coordinate = CLLocationCoordinate2D(latitude: lat, longitude: lng)
-            let placemark = MKPlacemark(coordinate: coordinate)
-            let mapItem = MKMapItem(placemark: placemark)
-            mapItem.name = event.eventName
-            mapItem.openInMaps()
+        .sheet(isPresented: $showBottomSheet) {
+            MapSelectionSheet(
+                showBottomSheet: $showBottomSheet,
+                eventLat: event.lat,
+                eventLng: event.long,
+                title: event.eventName
+            )
+            .presentationDetents([.medium, .large])
         }
     }
 }

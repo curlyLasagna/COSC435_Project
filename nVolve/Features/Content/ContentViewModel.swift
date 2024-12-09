@@ -26,6 +26,7 @@ import SwiftUI
             for e in self.events {
                 print(prettyPrint(event: e))
             }
+            self.filteredEvents = dataService.events // Initialize filteredEvents
         }
     }
 
