@@ -12,7 +12,7 @@ struct EventListSection: View {
     @EnvironmentObject var favoritesViewModel: FavoritesViewModel
 
     var sortedEvents: [EventModel] {
-        var events = viewModel.events
+        var events = viewModel.filteredEvents
         events.sort { (event1: EventModel, event2: EventModel) -> Bool in
             let isFav1 = favoritesViewModel.isFavorited(event: event1)
             let isFav2 = favoritesViewModel.isFavorited(event: event2)
@@ -28,6 +28,14 @@ struct EventListSection: View {
     }
 
     var body: some View {
+        if sortedEvents.isEmpty {
+            // Display a message when no events are found
+            Text("Sorry, no events meet these conditions")
+                .font(.title)
+                .foregroundColor(.gray)
+                .padding(.top, 110)
+                .padding(.bottom, 60)
+        }
         ScrollView(.horizontal, showsIndicators: true) {
             HStack(spacing: 10) {
                 ForEach(sortedEvents.indices, id: \.self) { index in

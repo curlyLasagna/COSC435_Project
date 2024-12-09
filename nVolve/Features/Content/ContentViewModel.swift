@@ -13,7 +13,8 @@ import SwiftUI
     var position: MapCameraPosition = .automatic
     var showEventInfo: Bool = false
     var showingFilters: Bool = false
-    var events: [EventModel] = []
+    var events: [EventModel] = []          // Original array
+    var filteredEvents: [EventModel] = []  // Array for displaying filtered results
     var dataService = DataService()
 
     func fetchTodayEvents() {
@@ -21,9 +22,11 @@ import SwiftUI
             await dataService.fetchInvolved()
             await dataService.fetchTUEvents()
             self.events = dataService.events
+            self.filteredEvents = dataService.events // Initialize filteredEvents
             for e in self.events {
                 print(prettyPrint(event: e))
             }
+            self.filteredEvents = dataService.events // Initialize filteredEvents
         }
     }
 

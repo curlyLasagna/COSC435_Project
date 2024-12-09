@@ -102,8 +102,7 @@ struct EventInfo: View {
 
                     // Get Directions Button
                     Button(action: {
-                        openMapApp(latitude: event.lat, longitude: event.long)
-                        showEvent = false
+                        showBottomSheet = true
                     }) {
                         HStack {
                             Image(systemName: "map.fill")
