@@ -5,31 +5,43 @@
 //  Created by Romerico David on 11/25/24.
 //
 
-import SwiftUI
-import MapKit
 import CoreLocation
 import CoreLocationUI
-
+import MapKit
+import SwiftUI
 
 struct MapSection: View {
     @State private var position: MapCameraPosition = .automatic
-    var viewModel: ContentViewModel = ContentViewModel()
-    var markers: Markers
+    var viewModel: ContentViewModel
     @State private var reset: Bool = false
     let manager = CLLocationManager()
+    @State private var selectedEvent: EventModel? = nil
+    @State var isEventSelected: Bool = false
 
     var body: some View {
         ZStack(alignment: .topTrailing) {
             Map(position: $position) {
-                // Static Markers
-                ForEach(markers.markers, id: \.name) { marker in
-                    Marker(marker.name, systemImage: marker.image, coordinate: marker.coordinate)
-                        .tint(marker.color)
+                ForEach(viewModel.events) { event in
+                    if event.building != "Narnia" {
+                        Annotation(
+                            event.eventName,
+                            coordinate: CLLocationCoordinate2D(
+                                latitude: Double(event.lat)!,
+                                longitude: Double(event.long)!)
+                        ) {
+                            VStack {
+                                Image(systemName: "mappin.circle.fill")
+                                    .font(.title)
+                                    .foregroundColor(.red)
+                            }
+                            .onTapGesture {
+                                isEventSelected = true
+                                selectedEvent = event
+                            }
+                        }
+                    }
                 }
                 UserAnnotation()
-            }
-            .mapControls{
-                MapPitchToggle()
             }
             .onAppear {
                 manager.requestWhenInUseAuthorization()
@@ -39,13 +51,14 @@ struct MapSection: View {
             .frame(height: 410)
             .colorScheme(.dark)
 
-          
             Button(action: {
                 if let userLocation = manager.location {
-                    position = .region(MKCoordinateRegion(
-                        center: userLocation.coordinate,
-                        span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
-                    ))
+                    position = .region(
+                        MKCoordinateRegion(
+                            center: userLocation.coordinate,
+                            span: MKCoordinateSpan(
+                                latitudeDelta: 0.01, longitudeDelta: 0.01)
+                        ))
                 }
                 reset = true
             }) {
@@ -60,9 +73,8 @@ struct MapSection: View {
             .cornerRadius(5)
             .shadow(radius: 4)
             .padding([.top], 52)
-            .padding(.trailing,7)
-            
-                        
+            .padding(.trailing, 7)
+
             // Reset Button
             if reset {
                 Button("Reset Camera") {
@@ -76,6 +88,10 @@ struct MapSection: View {
                 .padding([.top, .leading], 100)
             }
         }
+        .sheet(isPresented: $isEventSelected) {
+            if let selectedEvent  {
+                EventInfo(showEvent: $isEventSelected, event: selectedEvent)
+            }
+        }
     }
 }
-

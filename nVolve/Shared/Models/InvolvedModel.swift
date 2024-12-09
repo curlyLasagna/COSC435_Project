@@ -5,8 +5,6 @@
 //  Created by Luis on 11/12/24.
 //
 
-import SwiftUICore
-
 struct InvolvedEvent: Decodable, Identifiable {
     let id: String?
     let orgName: String?
@@ -18,6 +16,7 @@ struct InvolvedEvent: Decodable, Identifiable {
     let endDate: String?
     let imagePath: String?
     let eventTheme: String?
+    let categories: [String]?
     let latitude: String?
     let longitude: String?
     let perks: [String]?
@@ -33,6 +32,7 @@ struct InvolvedEvent: Decodable, Identifiable {
         case endDate = "endsOn"
         case imagePath = "imagePath"
         case eventTheme = "theme"
+        case categories = "categoryNames"
         case latitude
         case longitude
         case perks = "benefitNames"
