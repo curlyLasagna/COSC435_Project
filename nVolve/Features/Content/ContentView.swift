@@ -19,9 +19,7 @@ struct ContentView: View {
 
     init() {
         let fvm = FavoritesViewModel()
-         let contentViewModel = ContentViewModel()
-            _contentViewModel = State(wrappedValue: contentViewModel)
-            _filterViewModel = StateObject(wrappedValue: FilterViewModel(contentViewModel: contentViewModel))
+        let contentViewModel = ContentViewModel()
         _favoritesViewModel = StateObject(wrappedValue: fvm)
         _notificationsViewModel = StateObject(wrappedValue: NotificationsViewModel(favoritesViewModel: fvm))
         _contentViewModel = State(wrappedValue: contentViewModel)

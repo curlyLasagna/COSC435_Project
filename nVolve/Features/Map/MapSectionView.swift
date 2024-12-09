@@ -35,8 +35,8 @@ struct MapSection: View {
                                     .foregroundColor(.red)
                             }
                             .onTapGesture {
-                                isEventSelected = true
                                 selectedEvent = event
+                                isEventSelected.toggle()
                             }
                         }
                     }
@@ -88,10 +88,15 @@ struct MapSection: View {
                 .padding([.top, .leading], 100)
             }
         }
-        .sheet(isPresented: $isEventSelected) {
-            if let selectedEvent  {
-                EventInfo(showEvent: $isEventSelected, event: selectedEvent)
-            }
+        .sheet(
+            item: $selectedEvent
+        ) { event in
+            // Credits to Claude because I would've never come up with whatever this is
+            EventInfo(
+                showEvent: Binding(
+                    get: { selectedEvent != nil },
+                    set: { if !$0 { selectedEvent = nil } }
+                ), event: event)
         }
     }
 }
