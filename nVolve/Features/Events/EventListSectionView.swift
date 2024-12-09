@@ -28,6 +28,14 @@ struct EventListSection: View {
     }
 
     var body: some View {
+        if sortedEvents.isEmpty {
+            // Display a message when no events are found
+            Text("Sorry, no events meet these conditions")
+                .font(.title)
+                .foregroundColor(.gray)
+                .padding(.top, 110)
+                .padding(.bottom, 60)
+        }
         ScrollView(.horizontal, showsIndicators: true) {
             HStack(spacing: 10) {
                 ForEach(sortedEvents.indices, id: \.self) { index in
