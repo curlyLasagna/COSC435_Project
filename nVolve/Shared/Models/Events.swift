@@ -11,4 +11,5 @@ struct EventModel: Identifiable {
     let lat: String
     let long: String
     let time: String
+    let building: String
 }

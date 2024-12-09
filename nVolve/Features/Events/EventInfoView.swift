@@ -10,17 +10,8 @@ import MapKit
 
 struct EventInfo: View {
     @Binding var showEvent: Bool
-    var imagePath: String?
-    var title: String
-    var time: String
-    var room: String
-    var description: String
+    let event: EventModel
     @State private var favorited = false
-
-    var eventLat: String
-    var eventLng: String
-    var perks: [String]
-    var eventID: String?
     @EnvironmentObject var favoritesViewModel: FavoritesViewModel
     @State private var showBottomSheet = false
 
@@ -31,7 +22,7 @@ struct EventInfo: View {
                 VStack(alignment: .leading, spacing: 16) {
                     // Header with title and close button
                     HStack {
-                        Text(title)
+                        Text(event.eventName)
                             .font(.system(size: 28, weight: .bold))
                             .lineLimit(2)
                             .padding(.leading)
@@ -49,7 +40,7 @@ struct EventInfo: View {
                     .padding(.top, 10)
 
                     // Event image
-                    if let imagePath = imagePath, let url = URL(string: imagePath) {
+                    if let url = URL(string: event.eventImage) {
                         AsyncImage(url: url) { image in
                             image
                                 .resizable()
@@ -65,27 +56,27 @@ struct EventInfo: View {
 
                     // Event details
                     VStack(alignment: .leading, spacing: 8) {
-                        Text("Time: \(time)")
+                        Text("Time: \(event.time)")
                             .font(.title3)
                             .fontWeight(.semibold)
 
-                        Text("Location: \(room)")
+                        Text("Location: \(event.eventLocation)")
                             .font(.title3)
                             .fontWeight(.semibold)
 
-                        Text(description)
+                        Text(event.eventDescription)
                             .font(.body)
                             .foregroundColor(.secondary)
                             .padding(.top)
                     }
 
                     // Perks section
-                    if !perks.isEmpty {
+                    if !event.perks.isEmpty {
                         VStack(alignment: .leading, spacing: 8) {
                             Text("Perks")
                                 .font(.headline)
 
-                            ForEach(perks, id: \.self) { perk in
+                            ForEach(event.perks, id: \.self) { perk in
                                 HStack {
                                     Image(systemName: "checkmark.circle.fill")
                                         .foregroundColor(.green)
@@ -111,7 +102,8 @@ struct EventInfo: View {
 
                     // Get Directions Button
                     Button(action: {
-                        showBottomSheet = true
+                        openMapApp(latitude: event.lat, longitude: event.long)
+                        showEvent = false
                     }) {
                         HStack {
                             Image(systemName: "map.fill")
@@ -130,14 +122,12 @@ struct EventInfo: View {
                     // Favorite Button
                     Button(action: {
                         favorited.toggle()
-                        if let id = eventID, let event = favoritesViewModel.findEventByID(id: id) {
                             if favorited {
                                 favoritesViewModel.addFavorite(event: event)
                             } else {
                                 favoritesViewModel.removeFavorite(event: event)
                             }
                             showEvent = false
-                        }
                     }) {
                         Image(systemName: favorited ? "heart.fill" : "heart")
                             .font(.system(size: 36))
@@ -155,7 +145,7 @@ struct EventInfo: View {
         .background(Color(UIColor.systemBackground))
         .edgesIgnoringSafeArea(.bottom)
         .onAppear {
-            if let id = eventID, let event = favoritesViewModel.findEventByID(id: id) {
+            if let event = favoritesViewModel.findEventByID(id: event.id) {
                 favorited = favoritesViewModel.isFavorited(event: event)
             }
         }

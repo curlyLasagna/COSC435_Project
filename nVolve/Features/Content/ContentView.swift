@@ -12,7 +12,6 @@ struct ContentView: View {
     @StateObject var favoritesViewModel = FavoritesViewModel()
     @State var contentViewModel = ContentViewModel()
     @State private var position: MapCameraPosition = .automatic
-    @StateObject private var viewModel = Markers()
     @StateObject private var filterViewModel = FilterViewModel()
     @State private var showingFilters = false
 
@@ -38,12 +37,9 @@ struct ContentView: View {
                 }
                 .padding(.bottom)
 
-
-
                 // Map Section
                 MapSection(
-                    viewModel: contentViewModel,
-                    markers: viewModel
+                    viewModel: contentViewModel
                 )
 
                 // Events Header
