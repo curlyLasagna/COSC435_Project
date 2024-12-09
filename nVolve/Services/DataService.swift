@@ -5,6 +5,7 @@
 //  Created by Luis on 11/24/24.
 //
 import Alamofire
+import MapKit
 import SwiftUI
 
 @Observable class DataService {
@@ -63,6 +64,100 @@ import SwiftUI
     }
 }
 
+// Since the data doesn't want to play nice, this is the least amount of effort I can put in that would categorize events by building
+// Not exactly the most accurate but good enough for an MVP
+func setBuildingByCoordinates(lat: Double, long: Double) -> String {
+    // How close a coordinate has to be
+    let threshold: Double = 400.0
+
+    let buildingLocations: [String: CLLocation] = [
+        "Union": CLLocation(
+            latitude: 39.39329226884807, longitude: -76.61096268644614),
+        "Liberal Arts": CLLocation(
+            latitude: 39.39492842913834, longitude: -76.60932724025416),
+        "Burdick": CLLocation(
+            latitude: 39.395271855922246, longitude: -76.61218288627627),
+        "York Road": CLLocation(
+            latitude: 39.39069379520995, longitude: -76.60563329053981),
+        "Arts": CLLocation(
+            latitude: 39.3913806226192, longitude: -76.61289412243788),
+        "NewmanCenter": CLLocation(
+            latitude: 39.39192875071915, longitude: -76.60394030346345),
+        "TuArena": CLLocation(
+            latitude: 39.387711752091846, longitude: -76.61701109977116),
+        "TigerPlazza": CLLocation(
+            latitude: 39.39506413482851, longitude: -76.61081088812264),
+        "Library": CLLocation(
+            latitude: 39.39409061261545, longitude: -76.60649108812262),
+        "WestVillageDining": CLLocation(
+            latitude: 39.39390693537731, longitude: -76.61816013552868),
+        "Narnia": CLLocation(
+            latitude: 39.3924982, longitude: -76.6083555),
+        "LectureHall": CLLocation(latitude: 39.394018, longitude: -76.608473),
+        "UnitedStadium": CLLocation(latitude: 39.388695, longitude: -76.616015),
+        "PsychBuilding": CLLocation(
+            latitude: 39.394597029100346, longitude: -76.60900408836083),
+    ]
+
+    let eventLocation = CLLocation(latitude: lat, longitude: long)
+    let closestBuilding = buildingLocations.min {
+        eventLocation.distance(from: $0.value)
+            < eventLocation.distance(from: $1.value)
+    }
+
+    if let closestBuilding = closestBuilding,
+        eventLocation.distance(from: closestBuilding.value) <= threshold
+    {
+        return closestBuilding.key
+    }
+    return "Narnia"
+
+}
+
+func getStartTime(dateAsString: String?) -> String {
+    let isoFormatter = ISO8601DateFormatter()
+    isoFormatter.formatOptions = [.withInternetDateTime]
+    guard let dateAsString = dateAsString,
+        let createdDate = isoFormatter.date(from: dateAsString)
+    else {
+        return "No date"
+    }
+
+    let readableFormatter = DateFormatter()
+    // We only care about time since we're only pulling events for today
+    readableFormatter.dateFormat = "h:mm a"
+    return readableFormatter.string(from: createdDate)
+}
+
+func stripHTML(text: String?) -> String {
+    guard var result = text else { return "" }
+
+    // Remove HTML tags using a regex
+    result = result.replacingOccurrences(
+        of: "<[^>]+>", with: "", options: .regularExpression)
+
+    // Decode and remove HTML entities like &nbsp;, &amp; into plain text equivalents
+    if let decodedData = result.data(using: .utf8) {
+        let attributedString = try? NSAttributedString(
+            data: decodedData,
+            options: [
+                .documentType: NSAttributedString.DocumentType.html,
+                .characterEncoding: String.Encoding.utf8.rawValue,
+            ],
+            documentAttributes: nil
+        )
+        result = attributedString?.string ?? result
+    }
+
+    // Replace non-breaking spaces
+    result = result.replacingOccurrences(of: "\u{00A0}", with: " ")
+
+    // Trim leading or trailing spaces or newlines
+    result = result.trimmingCharacters(in: .whitespacesAndNewlines)
+
+    return result
+}
+
 extension InvolvedEvent {
 
     func getImages(_ imgPath: String?) -> String {
@@ -85,18 +180,24 @@ extension InvolvedEvent {
         else {
             return nil
         }
-
+        
+        // I'm so over Swift 🫠
+        var categoriesAndThemes = categories
+        categoriesAndThemes?.append(eventTheme ?? "")
         return EventModel(
             id: id,
             eventName: name,
-            eventDescription: description,
+            eventDescription: stripHTML(text: description),
             eventLocation: location,
             eventImage: getImages(imagePath),
-            theme: [eventTheme ?? ""],
+            theme: categoriesAndThemes!,
             perks: perks ?? [],
             lat: latitude ?? "39.3924982",
             long: longitude ?? "-76.6083555",
-            time: time
+            time: getStartTime(dateAsString: time),
+            building: setBuildingByCoordinates(
+                lat: Double(latitude ?? "39.3924982")!,
+                long: Double(longitude ?? "-76.6083555")!)
         )
     }
 }
@@ -116,13 +217,19 @@ extension EventsTUEvent {
         return EventModel(
             id: String(id),
             eventName: name,
-            eventDescription: description,
+            eventDescription: stripHTML(text: description),
             eventLocation: location,
             eventImage: imagePath ?? "",
             theme: [""],
             perks: customFields?.foodServed == "Yes" ? ["Free Food"] : [],
             lat: geo?.latitude ?? "39.3924982",
             long: geo?.longitude ?? "-76.6083555",
-            time: time)
+            time: getStartTime(dateAsString: time) ,
+            // 🤮
+            building: setBuildingByCoordinates(
+                lat: Double(geo?.latitude ?? "39.3924982")!,
+                long: Double(geo?.longitude ?? "-76.6083555")!)
+
+        )
     }
 }

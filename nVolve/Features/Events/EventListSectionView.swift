@@ -12,7 +12,7 @@ struct EventListSection: View {
     @EnvironmentObject var favoritesViewModel: FavoritesViewModel
 
     var sortedEvents: [EventModel] {
-        var events = viewModel.events
+        var events = viewModel.filteredEvents
         events.sort { (event1: EventModel, event2: EventModel) -> Bool in
             let isFav1 = favoritesViewModel.isFavorited(event: event1)
             let isFav2 = favoritesViewModel.isFavorited(event: event2)
@@ -32,9 +32,7 @@ struct EventListSection: View {
             HStack(spacing: 10) {
                 ForEach(sortedEvents.indices, id: \.self) { index in
                     EventCard(
-                        event: sortedEvents[index],
-                        date: viewModel.getStartTime(dateAsString: sortedEvents[index].time),
-                        imagePath: sortedEvents[index].eventImage
+                        event: sortedEvents[index]
                     )
                 }
             }
