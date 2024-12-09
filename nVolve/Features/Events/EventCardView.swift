@@ -9,22 +9,19 @@ import SwiftUI
 
 struct EventCard: View {
     let event: EventModel
-    let date: String
-    let imagePath: String?
-    var viewModel: ContentViewModel = ContentViewModel()
-    var strippedEventDescription: String { return viewModel.stripHTML(text: event.eventDescription) }
     @State var showEvent: Bool = false
     @EnvironmentObject var favoritesViewModel: FavoritesViewModel
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             // Event Image or Placeholder
-            if let imagePath = imagePath, let url = URL(string: imagePath) {
+            if let url = URL(string: event.eventImage) {
                 AsyncImage(url: url) { image in
                     image
                         .resizable()
                         .scaledToFill()
-                        .frame(height: 120)
+                        .frame(height: 132)
+                        .frame(width: 200)
                         .clipped()
                         .cornerRadius(8)
                 } placeholder: {
@@ -45,7 +42,7 @@ struct EventCard: View {
                     Image(systemName: "clock.fill")
                         .foregroundColor(
                             Color(red: 1.0, green: 0.733, blue: 0.0))
-                    Text(date)
+                    Text(event.time)
                         .font(.caption)
                         .foregroundColor(.black)
                         .lineLimit(1)
@@ -92,15 +89,7 @@ struct EventCard: View {
         .fullScreenCover(isPresented: $showEvent) {
             EventInfo(
                 showEvent: $showEvent,
-                imagePath: imagePath,
-                title: event.eventName,
-                time: date,
-                room: event.eventLocation,
-                description: strippedEventDescription,
-                eventLat: event.lat,
-                eventLng: event.long,
-                perks: event.perks,
-                eventID: event.id
+                event: event
             )
         }
         .padding(.trailing, 5)

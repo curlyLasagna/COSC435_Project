@@ -4,6 +4,7 @@
 //
 //  Created by Rasheed Nolley on 11/18/24.
 //
+
 import SwiftUI
 import CoreLocation
 import CoreLocationUI
@@ -22,4 +23,3 @@ func openMapAppWithDirections(latitude: String, longitude: String) {
         UIApplication.shared.open(url, options: [:], completionHandler: nil)
     }
 }
-
