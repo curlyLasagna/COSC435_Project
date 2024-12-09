@@ -44,10 +44,10 @@ class NotificationsViewModel: NSObject, ObservableObject, UNUserNotificationCent
 
     func scheduleNotificationsForFavorites() {
         UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
-        let intervals: [TimeInterval] = [8280] // 1hr, 30m, 15m, 5m
+
+        let intervals: [TimeInterval] = [3600, 1800, 900, 300] // 1hr, 30m, 15m, 5m
 
         for event in favorites {
-            print("Notifications \(event.time)")
             guard let eventDate = parseEventTime(event.time) else {
                 continue
             }
