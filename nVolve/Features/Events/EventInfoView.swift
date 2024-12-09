@@ -152,9 +152,9 @@ struct EventInfo: View {
         .sheet(isPresented: $showBottomSheet) {
             MapSelectionSheet(
                 showBottomSheet: $showBottomSheet,
-                eventLat: eventLat,
-                eventLng: eventLng,
-                title: title
+                eventLat: event.lat,
+                eventLng: event.long,
+                title: event.eventName
             )
             .presentationDetents([.medium, .large])
         }
