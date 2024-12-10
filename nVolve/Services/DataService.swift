@@ -114,21 +114,6 @@ func setBuildingByCoordinates(lat: Double, long: Double) -> String {
 
 }
 
-func getStartTime(dateAsString: String?) -> String {
-    let isoFormatter = ISO8601DateFormatter()
-    isoFormatter.formatOptions = [.withInternetDateTime]
-    guard let dateAsString = dateAsString,
-        let createdDate = isoFormatter.date(from: dateAsString)
-    else {
-        return "No date"
-    }
-
-    let readableFormatter = DateFormatter()
-    // We only care about time since we're only pulling events for today
-    readableFormatter.dateFormat = "h:mm a"
-    return readableFormatter.string(from: createdDate)
-}
-
 func stripHTML(text: String?) -> String {
     guard var result = text else { return "" }
 
